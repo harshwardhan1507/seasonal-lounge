@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "seasonal-lounge",
+  "homepage": "https://seasonal-lounge.vercel.app",
+  "items": [
+    {
+      "name": "seasonal-lounge",
+      "type": "registry:ui",
+      "title": "Seasonal Lounge",
+      "description": "A configurable React lounge with seasonal scenes, ambient audio loops, particle effects, calm full-screen mode, and theme builder."
+    }
+  ]
+}

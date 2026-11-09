@@ -7,8 +7,10 @@ import {
   generateReactCode,
   generateConfigCode,
   getInstallCommand,
+  getShadcnCommand,
   downloadFile,
   type PackageManager,
+  type InstallationMethod,
 } from './codeGenerator';
 import './playground.css';
 
@@ -46,7 +48,9 @@ const DEFAULT_THEME: SeasonalTheme = {
 export function Playground() {
   const [activeTab, setActiveTab] = useState<'particles' | 'theme' | 'effects' | 'export'>('particles');
   const [exportFormat, setExportFormat] = useState<'tsx' | 'json' | 'install'>('tsx');
+  const [installMethod, setInstallMethod] = useState<InstallationMethod>('npm');
   const [packageManager, setPackageManager] = useState<PackageManager>('npm');
+  const [shadcnSource, setShadcnSource] = useState<'hosted' | 'github'>('hosted');
   const [selectedSeasonId, setSelectedSeasonId] = useState<string>('spring');
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [particles, setParticles] = useState<ParticleSettings>(DEFAULT_PARTICLES);
@@ -116,8 +120,8 @@ export function Playground() {
   }, [selectedSeasonId, activeCustomSeason]);
 
   const generatedTsx = useMemo(
-    () => generateReactCode(activeCustomSeason, particles, theme, activeEffects),
-    [activeCustomSeason, particles, theme, activeEffects],
+    () => generateReactCode(activeCustomSeason, particles, theme, activeEffects, installMethod),
+    [activeCustomSeason, particles, theme, activeEffects, installMethod],
   );
 
   const generatedJson = useMemo(
@@ -824,37 +828,87 @@ export function Playground() {
             )}
 
             {exportFormat === 'install' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {/* Installation Method Selector */}
                 <div className="control-field">
-                  <label htmlFor="package-manager-select" className="control-label">Package Manager</label>
+                  <label htmlFor="install-method-select" className="control-label">Installation Method</label>
                   <select
-                    id="package-manager-select"
-                    value={packageManager}
-                    onChange={(e) => setPackageManager(e.target.value as PackageManager)}
+                    id="install-method-select"
+                    value={installMethod}
+                    onChange={(e) => setInstallMethod(e.target.value as InstallationMethod)}
                     className="control-select"
+                    aria-label="Select installation method"
                   >
-                    <option value="npm">npm</option>
-                    <option value="pnpm">pnpm</option>
-                    <option value="yarn">yarn</option>
-                    <option value="bun">bun</option>
+                    <option value="npm">📦 npm Package (Recommended for fast setup)</option>
+                    <option value="shadcn">🧩 Source Code (shadcn-style registry)</option>
                   </select>
                 </div>
 
-                <div className="code-preview-box">
-                  <pre className="code-preview-text">{getInstallCommand(packageManager)}</pre>
-                </div>
+                {installMethod === 'npm' ? (
+                  <>
+                    <div className="control-field">
+                      <label htmlFor="package-manager-select" className="control-label">Package Manager</label>
+                      <select
+                        id="package-manager-select"
+                        value={packageManager}
+                        onChange={(e) => setPackageManager(e.target.value as PackageManager)}
+                        className="control-select"
+                      >
+                        <option value="npm">npm</option>
+                        <option value="pnpm">pnpm</option>
+                        <option value="yarn">yarn</option>
+                        <option value="bun">bun</option>
+                      </select>
+                    </div>
 
-                <button
-                  type="button"
-                  className="action-btn action-btn--primary"
-                  onClick={() => copyToClipboard(getInstallCommand(packageManager), 'Install command')}
-                >
-                  📋 Copy Installation Command
-                </button>
+                    <div className="code-preview-box">
+                      <pre className="code-preview-text">{getInstallCommand(packageManager)}</pre>
+                    </div>
 
-                <p className="export-guidance-note">
-                  <strong>Styles:</strong> Remember to import <code>@harshwardhan1507/seasonal-lounge/styles.css</code> in your root entry file or component.
-                </p>
+                    <button
+                      type="button"
+                      className="action-btn action-btn--primary"
+                      onClick={() => copyToClipboard(getInstallCommand(packageManager), 'npm install command')}
+                    >
+                      📋 Copy Installation Command
+                    </button>
+
+                    <p className="export-guidance-note">
+                      <strong>Styles:</strong> Import <code>@harshwardhan1507/seasonal-lounge/styles.css</code> in your app root or component file.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="control-field">
+                      <label htmlFor="shadcn-source-select" className="control-label">Registry Source</label>
+                      <select
+                        id="shadcn-source-select"
+                        value={shadcnSource}
+                        onChange={(e) => setShadcnSource(e.target.value as 'hosted' | 'github')}
+                        className="control-select"
+                      >
+                        <option value="hosted">Live Production Registry (seasonal-lounge.vercel.app)</option>
+                        <option value="github">GitHub Raw Repository Registry</option>
+                      </select>
+                    </div>
+
+                    <div className="code-preview-box">
+                      <pre className="code-preview-text">{getShadcnCommand(shadcnSource)}</pre>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="action-btn action-btn--primary"
+                      onClick={() => copyToClipboard(getShadcnCommand(shadcnSource), 'shadcn CLI command')}
+                    >
+                      📋 Copy shadcn CLI Command
+                    </button>
+
+                    <p className="export-guidance-note">
+                      <strong>Source Installation:</strong> Copies <code>SeasonalLounge</code>, particle engines, presets, and CSS into your project&apos;s <code>components/seasonal-lounge/</code> folder for complete direct modification.
+                    </p>
+                  </>
+                )}
               </div>
             )}
 
@@ -883,7 +937,12 @@ export function Playground() {
           <button
             type="button"
             className="action-btn action-btn--secondary"
-            onClick={() => copyToClipboard(getInstallCommand(packageManager), 'Install Command')}
+            onClick={() =>
+              copyToClipboard(
+                installMethod === 'npm' ? getInstallCommand(packageManager) : getShadcnCommand(shadcnSource),
+                'Install Command',
+              )
+            }
           >
             📦 Copy Installation Command
           </button>

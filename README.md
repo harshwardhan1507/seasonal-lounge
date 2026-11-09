@@ -34,6 +34,10 @@ Seasonal Lounge grew out of the interactive Lounge in [Harsh Wardhan's portfolio
 
 ## Installation
 
+Seasonal Lounge supports two installation pathways. See the full [Installation Guide](./docs/INSTALLATION.md) for details.
+
+### Method 1: Traditional npm package
+
 ```bash
 npm install @harshwardhan1507/seasonal-lounge
 ```
@@ -50,6 +54,27 @@ import '@harshwardhan1507/seasonal-lounge/styles.css';
 export function RestSpace() {
   return <SeasonalLounge seasons={seasonalPresets} initialSeasonId="spring" />;
 }
+```
+
+### Method 2: shadcn-style source code installation
+
+Copy the component source directly into your codebase for 100% customization freedom:
+
+```bash
+npx shadcn@latest add https://seasonal-lounge.vercel.app/registry/seasonal-lounge.json
+```
+
+Or via GitHub raw URL:
+
+```bash
+npx shadcn@latest add https://raw.githubusercontent.com/harshwardhan1507/seasonal-lounge/main/registry/seasonal-lounge.json
+```
+
+This adds the component source and styles to your `components/seasonal-lounge/` directory:
+
+```tsx
+import { SeasonalLounge, seasonalPresets } from '@/components/seasonal-lounge';
+import '@/components/seasonal-lounge/styles.css';
 ```
 
 The included presets are CSS-only, so they work without downloading media. To attach your own licensed audio or video, extend a preset or create a custom season:

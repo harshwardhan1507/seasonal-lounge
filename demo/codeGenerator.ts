@@ -1,6 +1,11 @@
 import type { SeasonDefinition, ParticleSettings, SeasonalTheme, EffectLayer } from '../src/types';
 
 export type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun';
+export type InstallationMethod = 'npm' | 'shadcn';
+
+export const REGISTRY_URL = 'https://seasonal-lounge.vercel.app/registry/seasonal-lounge.json';
+export const REGISTRY_RAW_GITHUB_URL =
+  'https://raw.githubusercontent.com/harshwardhan1507/seasonal-lounge/main/registry/seasonal-lounge.json';
 
 export function getInstallCommand(pm: PackageManager = 'npm'): string {
   switch (pm) {
@@ -14,6 +19,11 @@ export function getInstallCommand(pm: PackageManager = 'npm'): string {
     default:
       return 'npm install @harshwardhan1507/seasonal-lounge';
   }
+}
+
+export function getShadcnCommand(source: 'hosted' | 'github' = 'hosted'): string {
+  const targetUrl = source === 'hosted' ? REGISTRY_URL : REGISTRY_RAW_GITHUB_URL;
+  return `npx shadcn@latest add ${targetUrl}`;
 }
 
 export function escapeJsString(str: string): string {
@@ -61,6 +71,7 @@ export function generateReactCode(
   particles?: ParticleSettings,
   theme?: SeasonalTheme,
   effects?: EffectLayer[],
+  installMethod: InstallationMethod = 'npm',
 ): string {
   const symbolStr = typeof season.symbol === 'string' ? `'${escapeJsString(season.symbol)}'` : "'🌸'";
   const config = generateConfigObject(season, particles, theme, effects);
@@ -85,9 +96,16 @@ export function generateReactCode(
     ? `\n    audioSrc: '${escapeJsString(config.audioSrc)}',`
     : '';
 
-  return `import React from 'react';
+  const imports =
+    installMethod === 'shadcn'
+      ? `import React from 'react';
+import { SeasonalLounge, type SeasonDefinition } from '@/components/seasonal-lounge';
+import '@/components/seasonal-lounge/styles.css';`
+      : `import React from 'react';
 import { SeasonalLounge, type SeasonDefinition } from '@harshwardhan1507/seasonal-lounge';
-import '@harshwardhan1507/seasonal-lounge/styles.css';
+import '@harshwardhan1507/seasonal-lounge/styles.css';`;
+
+  return `${imports}
 
 /**
  * Custom Seasonal Lounge atmosphere component.

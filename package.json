@@ -29,10 +29,11 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node scripts/build-registry.mjs",
+    "build:registry": "node scripts/build-registry.mjs",
     "dev": "tsup --watch",
     "demo": "vite --config demo/vite.config.ts",
-    "demo:build": "vite build --config demo/vite.config.ts",
+    "demo:build": "node scripts/build-registry.mjs && vite build --config demo/vite.config.ts",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "pack:dry": "npm pack --dry-run"

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented here.
 
+## [2.0.0] - 2026-11-09
+
+### Added
+
+- Optional shadcn-style source code installation via custom registry
+- Valid shadcn registry item definition conforming to `https://ui.shadcn.com/schema/registry-item.json`
+- Automated registry build script (`scripts/build-registry.mjs`) ensuring zero drift between npm package source and registry files
+- Hosted registry endpoint deployed with demo at `https://seasonal-lounge.vercel.app/registry/seasonal-lounge.json` and GitHub fallback
+- Interactive Installation Method selector in the Playground (npm package vs shadcn source)
+- Dedicated comprehensive installation guide ([docs/INSTALLATION.md](./docs/INSTALLATION.md))
+- Automated test suite validating registry JSON schemas, file integrity, and CLI commands
+
 ## [1.4.0] - 2026-11-09
 
 ### Added
