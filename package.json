@@ -1,0 +1,72 @@
+{
+  "name": "@harshwardhan1507/seasonal-lounge",
+  "version": "0.1.0",
+  "description": "A configurable React lounge with seasonal video, ambient audio loops, particle effects, and a calm full-screen mode.",
+  "license": "MIT",
+  "author": "Harsh Wardhan",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/index.css"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "demo": "vite --config demo/vite.config.ts",
+    "demo:build": "vite build --config demo/vite.config.ts",
+    "check": "tsc --noEmit",
+    "pack:dry": "npm pack --dry-run"
+  },
+  "keywords": [
+    "react",
+    "seasonal",
+    "lounge",
+    "ambient",
+    "sakura",
+    "fullscreen",
+    "particles",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harshwardhan1507/seasonal-lounge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/harshwardhan1507/seasonal-lounge/issues"
+  },
+  "homepage": "https://github.com/harshwardhan1507/seasonal-lounge#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "tsup": "^9.0.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.3.8"
+  }
+}
