@@ -1,10 +1,30 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { configureSegmentedAudio } from './audio';
 import { SeasonalParticles } from './SeasonalParticles';
-import type { SeasonDefinition, SeasonalLoungeProps } from './types';
+import type { SeasonDefinition, SeasonalLoungeProps, SeasonalTheme } from './types';
 
 function getInitialSeason(seasons: SeasonDefinition[], initialSeasonId?: string) {
   return seasons.find((season) => season.id === initialSeasonId) ?? seasons[0];
+}
+
+function resolveBackground(season: SeasonDefinition, theme?: SeasonalTheme): string | undefined {
+  if (theme?.background) {
+    const bg = theme.background;
+    if (bg.type === 'solid' && bg.solidColor) {
+      return bg.solidColor;
+    }
+    if (bg.gradient) {
+      return bg.gradient;
+    }
+    if (bg.gradientColors && bg.gradientColors.length > 0) {
+      const dir = bg.gradientDirection ?? '145deg';
+      return `linear-gradient(${dir}, ${bg.gradientColors.join(', ')})`;
+    }
+    if (bg.fallbackColor) {
+      return bg.fallbackColor;
+    }
+  }
+  return season.background;
 }
 
 export function SeasonalLounge({
@@ -18,6 +38,7 @@ export function SeasonalLounge({
   calmModeLabel = 'Full-screen calm',
   onSeasonChange,
   style,
+  theme,
 }: SeasonalLoungeProps) {
   const initialSeason = useMemo(() => getInitialSeason(seasons, initialSeasonId), [initialSeasonId, seasons]);
   const [seasonId, setSeasonId] = useState(initialSeason?.id);
@@ -68,6 +89,10 @@ export function SeasonalLounge({
     return <div className="seasonal-lounge__empty">Add at least one season to SeasonalLounge.</div>;
   }
 
+  const activeTheme = season.theme ?? theme;
+  const resolvedBg = resolveBackground(season, activeTheme);
+  const activeVideo = activeTheme?.background?.videoUrl ?? season.videoSrc;
+
   const chooseSeason = (nextSeason: SeasonDefinition) => {
     setSeasonId(nextSeason.id);
     if (soundOn) playAudio(nextSeason);
@@ -100,18 +125,43 @@ export function SeasonalLounge({
     }
   };
 
+  const hasSolidColor = activeTheme?.background?.type === 'solid' && Boolean(activeTheme.background.solidColor);
+  const rootStyle: CSSProperties = {
+    background: resolvedBg,
+    ...(activeTheme?.background?.fallbackColor && !hasSolidColor
+      ? { backgroundColor: activeTheme.background.fallbackColor }
+      : {}),
+    '--seasonal-accent': activeTheme?.colors?.primaryAccent ?? season.accent ?? '#f9a8d4',
+    '--seasonal-accent-secondary': activeTheme?.colors?.secondaryAccent ?? '#f472b6',
+    '--seasonal-text': activeTheme?.colors?.textColor ?? 'white',
+    '--seasonal-control-bg': activeTheme?.colors?.controlBackground ?? 'rgba(0, 0, 0, 0.36)',
+    '--seasonal-control-color': activeTheme?.colors?.controlText ?? 'white',
+    '--seasonal-control-border': activeTheme?.colors?.controlBorder ?? 'rgba(255, 255, 255, 0.2)',
+    '--seasonal-font-family': activeTheme?.typography?.fontFamily ?? 'Inter, ui-sans-serif, system-ui, sans-serif',
+    '--seasonal-heading-size': activeTheme?.typography?.headingSize ?? 'clamp(2rem, 6vw, 4rem)',
+    '--seasonal-body-size': activeTheme?.typography?.bodySize ?? '0.95rem',
+    '--seasonal-font-weight': activeTheme?.typography?.fontWeight ? String(activeTheme.typography.fontWeight) : '700',
+    ...style,
+  } as CSSProperties;
+
+  const effectLayers = activeTheme?.effects && activeTheme.effects.length > 0
+    ? activeTheme.effects
+    : season.effects && season.effects.length > 0
+    ? season.effects
+    : null;
+
   return (
     <section
       ref={loungeRef}
       className={`seasonal-lounge ${calmMode ? 'seasonal-lounge--calm' : ''} ${className}`.trim()}
-      style={{ background: season.background, ...style }}
+      style={rootStyle}
       aria-label={`${season.label} seasonal lounge`}
     >
-      {season.videoSrc && (
+      {activeVideo && (
         <video
           ref={videoRef}
-          key={season.videoSrc}
-          src={season.videoSrc}
+          key={activeVideo}
+          src={activeVideo}
           autoPlay
           muted
           loop
@@ -122,7 +172,27 @@ export function SeasonalLounge({
           aria-label={`${season.label} seasonal scene`}
         />
       )}
-      <SeasonalParticles effect={season.effect ?? 'none'} accent={season.accent} settings={season.particles} />
+
+      {/* Layered or single particle effects */}
+      {!activeTheme?.disableParticles && (
+        effectLayers ? (
+          effectLayers.map((layer, idx) => (
+            <SeasonalParticles
+              key={`${layer.effect}-${idx}`}
+              effect={layer.effect}
+              accent={layer.accent ?? activeTheme?.colors?.particleColor ?? activeTheme?.colors?.primaryAccent ?? season.accent}
+              settings={layer.particles ?? season.particles}
+            />
+          ))
+        ) : (
+          <SeasonalParticles
+            effect={season.effect ?? 'none'}
+            accent={activeTheme?.colors?.particleColor ?? activeTheme?.colors?.primaryAccent ?? season.accent}
+            settings={season.particles}
+          />
+        )
+      )}
+
       <div className="seasonal-lounge__shade" />
 
       <div className="seasonal-lounge__topbar">
@@ -152,7 +222,7 @@ export function SeasonalLounge({
                 type="button"
                 onClick={() => chooseSeason(item)}
                 className={item.id === season.id ? 'seasonal-lounge__season seasonal-lounge__season--active' : 'seasonal-lounge__season'}
-                style={item.id === season.id ? { borderColor: item.accent } : undefined}
+                style={item.id === season.id ? { borderColor: item.accent ?? activeTheme?.colors?.primaryAccent } : undefined}
                 aria-pressed={item.id === season.id}
               >
                 {item.label}

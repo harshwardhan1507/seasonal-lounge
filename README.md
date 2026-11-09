@@ -15,6 +15,9 @@ Seasonal Lounge grew out of the interactive Lounge in [Harsh Wardhan's portfolio
 ## Features
 
 - Interactive Visual Playground to customize atmospheres in real time
+- Advanced Theme Builder for custom palettes, gradients, and typography
+- Layered Effect Architecture (combine Sakura + Sparkles, Snow + Sparkles, etc.)
+- Six curated theme presets (Sakura Dream, Cozy Autumn, Midnight Rain, Winter Silence, Golden Summer, Firefly Garden)
 - Seasonal video backgrounds
 - Optional ambient audio
 - Highlight loops using exact start and end times
@@ -74,6 +77,55 @@ const seasons: SeasonDefinition[] = [
 export function RestSpace() {
   return <SeasonalLounge seasons={seasons} initialSeasonId="spring" />;
 }
+```
+
+## Theme Builder and layered effects
+
+You can theme any season or lounge with `SeasonalTheme` and combine multiple effect layers:
+
+```tsx
+import {
+  SeasonalLounge,
+  themePresets,
+  type SeasonDefinition,
+} from '@harshwardhan1507/seasonal-lounge';
+import '@harshwardhan1507/seasonal-lounge/styles.css';
+
+// Use a built-in curated preset (Sakura Dream, Cozy Autumn, Midnight Rain, etc.)
+export function DreamySpace() {
+  return (
+    <SeasonalLounge
+      seasons={seasonalPresets}
+      theme={themePresets.sakuraDream}
+    />
+  );
+}
+
+// Or define a bespoke seasonal theme with layered effects:
+const customSeason: SeasonDefinition = {
+  id: 'twilight-sakura',
+  label: 'Twilight Sakura',
+  description: 'Deep dusk tones with falling petals and gentle sparkles.',
+  effects: [
+    { effect: 'sakura', particles: { density: 35, speed: 1 } },
+    { effect: 'sparkles', particles: { density: 15, speed: 0.8, direction: 'right' } },
+  ],
+  theme: {
+    background: {
+      type: 'gradient',
+      gradient: 'linear-gradient(135deg, #1c1024 0%, #301438 50%, #0d0714 100%)',
+    },
+    colors: {
+      primaryAccent: '#f472b6',
+      particleColor: '#fbcfe8',
+      textColor: '#ffffff',
+    },
+    typography: {
+      fontFamily: 'Inter, system-ui, sans-serif',
+      headingSize: '3rem',
+    },
+  },
+};
 ```
 
 ## Included seasons

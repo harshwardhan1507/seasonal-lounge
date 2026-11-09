@@ -1,4 +1,4 @@
-import type { SeasonDefinition, ParticleSettings } from '../src/types';
+import type { SeasonDefinition, ParticleSettings, SeasonalTheme, EffectLayer } from '../src/types';
 
 export function getInstallCommand(pm: 'npm' | 'pnpm' | 'yarn' | 'bun' = 'npm'): string {
   switch (pm) {
@@ -14,38 +14,63 @@ export function getInstallCommand(pm: 'npm' | 'pnpm' | 'yarn' | 'bun' = 'npm'): 
   }
 }
 
-export function generateConfigObject(season: SeasonDefinition, particles: ParticleSettings) {
+export function generateConfigObject(
+  season: SeasonDefinition,
+  particles?: ParticleSettings,
+  theme?: SeasonalTheme,
+  effects?: EffectLayer[],
+) {
   return {
     ...season,
-    particles,
+    ...(particles ? { particles } : {}),
+    ...(theme ? { theme } : {}),
+    ...(effects && effects.length > 0 ? { effects } : {}),
   };
 }
 
-export function generateConfigCode(season: SeasonDefinition, particles: ParticleSettings): string {
-  const config = generateConfigObject(season, particles);
+export function generateConfigCode(
+  season: SeasonDefinition,
+  particles?: ParticleSettings,
+  theme?: SeasonalTheme,
+  effects?: EffectLayer[],
+): string {
+  const config = generateConfigObject(season, particles, theme, effects);
   return JSON.stringify(config, null, 2);
 }
 
-export function generateReactCode(season: SeasonDefinition, particles: ParticleSettings): string {
+export function generateReactCode(
+  season: SeasonDefinition,
+  particles?: ParticleSettings,
+  theme?: SeasonalTheme,
+  effects?: EffectLayer[],
+): string {
   const symbolStr = typeof season.symbol === 'string' ? `'${season.symbol}'` : "'🌸'";
-  const particlesJson = JSON.stringify(particles, null, 4)
-    .split('\n')
-    .map((line, idx) => (idx === 0 ? line : `    ${line}`))
-    .join('\n');
+  const config = generateConfigObject(season, particles, theme, effects);
+
+  const particlesSection = config.particles
+    ? `\n    particles: ${JSON.stringify(config.particles, null, 4).replace(/\n/g, '\n    ')},`
+    : '';
+
+  const effectsSection = config.effects && config.effects.length > 0
+    ? `\n    effects: ${JSON.stringify(config.effects, null, 4).replace(/\n/g, '\n    ')},`
+    : '';
+
+  const themeSection = config.theme
+    ? `\n    theme: ${JSON.stringify(config.theme, null, 4).replace(/\n/g, '\n    ')},`
+    : '';
 
   return `import { SeasonalLounge, type SeasonDefinition } from '@harshwardhan1507/seasonal-lounge';
 import '@harshwardhan1507/seasonal-lounge/styles.css';
 
 const seasons: SeasonDefinition[] = [
   {
-    id: '${season.id}',
-    label: '${season.label}',
-    description: '${season.description.replace(/'/g, "\\'")}',
-    effect: '${season.effect ?? 'none'}',
-    accent: '${season.accent ?? '#f9a8d4'}',
-    background: '${(season.background ?? '').replace(/'/g, "\\'")}',
-    symbol: ${symbolStr},
-    particles: ${particlesJson},
+    id: '${config.id}',
+    label: '${config.label}',
+    description: '${config.description.replace(/'/g, "\\'")}',
+    effect: '${config.effect ?? 'none'}',
+    accent: '${config.accent ?? '#f9a8d4'}',
+    background: '${(config.background ?? '').replace(/'/g, "\\'")}',
+    symbol: ${symbolStr},${particlesSection}${effectsSection}${themeSection}
   },
 ];
 
@@ -54,7 +79,7 @@ export function Atmosphere() {
     <div style={{ width: '100%', minHeight: '36rem' }}>
       <SeasonalLounge
         seasons={seasons}
-        initialSeasonId="${season.id}"
+        initialSeasonId="${config.id}"
       />
     </div>
   );

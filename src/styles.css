@@ -1,5 +1,14 @@
 .seasonal-lounge {
   --seasonal-accent: #f9a8d4;
+  --seasonal-accent-secondary: #f472b6;
+  --seasonal-text: white;
+  --seasonal-control-bg: rgba(0, 0, 0, 0.36);
+  --seasonal-control-color: white;
+  --seasonal-control-border: rgba(255, 255, 255, 0.2);
+  --seasonal-font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  --seasonal-heading-size: clamp(2rem, 6vw, 4rem);
+  --seasonal-body-size: 0.95rem;
+
   position: relative;
   isolation: isolate;
   display: flex;
@@ -8,8 +17,8 @@
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 1.75rem;
   background: #24141f;
-  color: white;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  color: var(--seasonal-text);
+  font-family: var(--seasonal-font-family);
 }
 
 .seasonal-lounge--calm,
@@ -60,10 +69,10 @@
 
 .seasonal-lounge__control,
 .seasonal-lounge__season {
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--seasonal-control-border);
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.36);
-  color: white;
+  background: var(--seasonal-control-bg);
+  color: var(--seasonal-control-color);
   cursor: pointer;
   font: inherit;
   font-size: 0.75rem;
@@ -115,14 +124,16 @@
 
 .seasonal-lounge__content h2 {
   margin: 0;
-  font-size: clamp(2rem, 6vw, 4rem);
+  font-size: var(--seasonal-heading-size);
+  font-weight: var(--seasonal-font-weight, 700);
   letter-spacing: -0.04em;
 }
 
 .seasonal-lounge__content > p:last-of-type {
   margin: 0.75rem 0 0;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 0.95rem;
+  color: var(--seasonal-text);
+  opacity: 0.78;
+  font-size: var(--seasonal-body-size);
   line-height: 1.7;
 }
 

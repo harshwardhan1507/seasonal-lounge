@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { SeasonalLounge } from '../src/SeasonalLounge';
 import { seasonalPresets } from '../src/presets';
-import type { SeasonDefinition, ParticleSettings } from '../src/types';
+import { themePresets } from '../src/themePresets';
+import type { SeasonDefinition, ParticleSettings, SeasonalTheme, EffectLayer, SeasonalEffect } from '../src/types';
 import { generateReactCode, generateConfigCode, getInstallCommand } from './codeGenerator';
 import './playground.css';
 
@@ -13,10 +14,47 @@ const DEFAULT_PARTICLES: ParticleSettings = {
   direction: 'down',
 };
 
+const DEFAULT_THEME: SeasonalTheme = {
+  background: {
+    type: 'gradient',
+    fallbackColor: '#24141f',
+  },
+  colors: {
+    primaryAccent: '#f9a8d4',
+    secondaryAccent: '#f472b6',
+    particleColor: '#f9a8d4',
+    textColor: '#ffffff',
+    controlBackground: 'rgba(0, 0, 0, 0.36)',
+    controlText: '#ffffff',
+    controlBorder: 'rgba(255, 255, 255, 0.2)',
+  },
+  typography: {
+    fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
+    headingSize: 'clamp(2rem, 6vw, 4rem)',
+    bodySize: '0.95rem',
+    fontWeight: '700',
+  },
+  disableParticles: false,
+};
+
 export function Playground() {
+  const [activeTab, setActiveTab] = useState<'particles' | 'theme' | 'effects'>('particles');
   const [selectedSeasonId, setSelectedSeasonId] = useState<string>('spring');
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [particles, setParticles] = useState<ParticleSettings>(DEFAULT_PARTICLES);
+  const [theme, setTheme] = useState<SeasonalTheme>(DEFAULT_THEME);
+  const [activePresetId, setActivePresetId] = useState<string | null>(null);
+
+  // Layered effects state
+  const [secondaryEffect, setSecondaryEffect] = useState<SeasonalEffect>('none');
+  const [secondaryParticles, setSecondaryParticles] = useState<ParticleSettings>({
+    density: 18,
+    speed: 0.8,
+    size: 12,
+    opacity: 0.7,
+    direction: 'random',
+  });
+
   const [feedback, setFeedback] = useState<string | null>(null);
   const feedbackTimerRef = useRef<number | null>(null);
 
@@ -25,25 +63,46 @@ export function Playground() {
     [selectedSeasonId],
   );
 
-  // Rebuild the seasons array with the customized particle settings for the active season
-  const configuredSeasons = useMemo(() => {
-    return seasonalPresets.map((season) => {
-      if (season.id === selectedSeasonId) {
-        return {
-          ...season,
-          particles,
-        };
-      }
-      return season;
-    });
-  }, [selectedSeasonId, particles]);
+  // Build active effect layers
+  const activeEffects: EffectLayer[] = useMemo(() => {
+    const list: EffectLayer[] = [
+      {
+        effect: baseSeason.effect ?? 'sakura',
+        particles,
+        accent: theme.colors?.particleColor ?? theme.colors?.primaryAccent ?? baseSeason.accent,
+      },
+    ];
+    if (secondaryEffect !== 'none') {
+      list.push({
+        effect: secondaryEffect,
+        particles: secondaryParticles,
+        accent: theme.colors?.secondaryAccent ?? '#fde047',
+      });
+    }
+    return list;
+  }, [baseSeason, particles, secondaryEffect, secondaryParticles, theme]);
 
-  const activeCustomSeason = useMemo(() => {
+  // Build active season
+  const activeCustomSeason: SeasonDefinition = useMemo(() => {
     return {
       ...baseSeason,
+      accent: theme.colors?.primaryAccent ?? baseSeason.accent,
+      background: theme.background?.gradient ?? (theme.background?.type === 'solid' ? theme.background.solidColor : undefined) ?? baseSeason.background,
+      videoSrc: theme.background?.videoUrl ?? baseSeason.videoSrc,
       particles,
+      effects: activeEffects,
+      theme,
     };
-  }, [baseSeason, particles]);
+  }, [baseSeason, theme, particles, activeEffects]);
+
+  const configuredSeasons = useMemo(() => {
+    return seasonalPresets.map((s) => {
+      if (s.id === selectedSeasonId) {
+        return activeCustomSeason;
+      }
+      return s;
+    });
+  }, [selectedSeasonId, activeCustomSeason]);
 
   const showFeedback = (message: string) => {
     if (feedbackTimerRef.current) window.clearTimeout(feedbackTimerRef.current);
@@ -64,14 +123,39 @@ export function Playground() {
       await navigator.clipboard.writeText(text);
       showFeedback(`✓ ${label} copied to clipboard!`);
     } catch {
-      // Fallback
       showFeedback(`Failed to copy to clipboard`);
     }
   };
 
+  const applyPreset = (presetKey: string) => {
+    const preset = themePresets[presetKey];
+    if (!preset) return;
+    setActivePresetId(presetKey);
+    setTheme(preset);
+
+    if (preset.effects && preset.effects.length > 0) {
+      if (preset.effects[0]?.particles) {
+        setParticles(preset.effects[0].particles);
+      }
+      if (preset.effects.length > 1 && preset.effects[1]) {
+        setSecondaryEffect(preset.effects[1].effect);
+        if (preset.effects[1].particles) {
+          setSecondaryParticles(preset.effects[1].particles);
+        }
+      } else {
+        setSecondaryEffect('none');
+      }
+    }
+
+    showFeedback(`✓ Applied "${preset.label}" theme preset`);
+  };
+
   const resetDefaults = () => {
     setParticles(DEFAULT_PARTICLES);
-    showFeedback('✓ Particle settings reset to defaults');
+    setTheme(DEFAULT_THEME);
+    setActivePresetId(null);
+    setSecondaryEffect('none');
+    showFeedback('✓ Atmosphere reset to defaults');
   };
 
   return (
@@ -110,10 +194,11 @@ export function Playground() {
 
         <div className={`preview-stage preview-stage--${viewport}`}>
           <SeasonalLounge
-            key={`${selectedSeasonId}-${JSON.stringify(particles)}`}
+            key={`${selectedSeasonId}-${JSON.stringify(theme)}-${JSON.stringify(particles)}-${secondaryEffect}`}
             seasons={configuredSeasons}
             initialSeasonId={selectedSeasonId}
             onSeasonChange={(s: SeasonDefinition) => setSelectedSeasonId(s.id)}
+            theme={theme}
             showAudioControl={false}
           />
         </div>
@@ -133,163 +218,506 @@ export function Playground() {
           </button>
         </div>
 
-        {/* Season Selection */}
-        <div className="control-section">
-          <h3 className="control-section-title">Select Season</h3>
-          <div className="control-season-grid" role="group" aria-label="Select season preset">
-            {seasonalPresets.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                className={`season-btn-card ${s.id === selectedSeasonId ? 'season-btn-card--active' : ''}`}
-                style={s.id === selectedSeasonId ? { borderColor: s.accent } : undefined}
-                onClick={() => setSelectedSeasonId(s.id)}
-                aria-pressed={s.id === selectedSeasonId}
+        {/* Tab Navigation */}
+        <div className="tabs-nav" role="tablist" aria-label="Customization categories">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'particles'}
+            className={`tab-btn ${activeTab === 'particles' ? 'tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('particles')}
+          >
+            Particles
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'theme'}
+            className={`tab-btn ${activeTab === 'theme' ? 'tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('theme')}
+          >
+            Theme & Colors
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'effects'}
+            className={`tab-btn ${activeTab === 'effects' ? 'tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('effects')}
+          >
+            Layered Effects
+          </button>
+        </div>
+
+        {/* TAB 1: Particles */}
+        {activeTab === 'particles' && (
+          <>
+            <div className="control-section">
+              <h3 className="control-section-title">Select Season</h3>
+              <div className="control-season-grid" role="group" aria-label="Select season preset">
+                {seasonalPresets.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`season-btn-card ${s.id === selectedSeasonId ? 'season-btn-card--active' : ''}`}
+                    style={s.id === selectedSeasonId ? { borderColor: s.accent } : undefined}
+                    onClick={() => setSelectedSeasonId(s.id)}
+                    aria-pressed={s.id === selectedSeasonId}
+                  >
+                    <span>{s.symbol} {s.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="control-section">
+              <h3 className="control-section-title">Particle Configuration</h3>
+
+              {/* Density */}
+              <div className="control-field">
+                <div className="control-field-top">
+                  <label htmlFor="particle-density" className="control-label">Density</label>
+                  <span className="control-value-badge" data-testid="density-val">{particles.density}</span>
+                </div>
+                <input
+                  id="particle-density"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value={particles.density ?? 35}
+                  onChange={(e) => setParticles((p) => ({ ...p, density: Number(e.target.value) }))}
+                  className="control-slider"
+                  aria-label="Particle density"
+                />
+              </div>
+
+              {/* Speed */}
+              <div className="control-field">
+                <div className="control-field-top">
+                  <label htmlFor="particle-speed" className="control-label">Speed Multiplier</label>
+                  <span className="control-value-badge" data-testid="speed-val">{(particles.speed ?? 1).toFixed(2)}x</span>
+                </div>
+                <input
+                  id="particle-speed"
+                  type="range"
+                  min="0.25"
+                  max="3"
+                  step="0.05"
+                  value={particles.speed ?? 1}
+                  onChange={(e) => setParticles((p) => ({ ...p, speed: Number(e.target.value) }))}
+                  className="control-slider"
+                  aria-label="Particle speed multiplier"
+                />
+              </div>
+
+              {/* Size */}
+              <div className="control-field">
+                <div className="control-field-top">
+                  <label htmlFor="particle-size" className="control-label">Particle Size</label>
+                  <span className="control-value-badge" data-testid="size-val">{particles.size}px</span>
+                </div>
+                <input
+                  id="particle-size"
+                  type="range"
+                  min="4"
+                  max="60"
+                  step="1"
+                  value={particles.size ?? 16}
+                  onChange={(e) => setParticles((p) => ({ ...p, size: Number(e.target.value) }))}
+                  className="control-slider"
+                  aria-label="Particle size in pixels"
+                />
+              </div>
+
+              {/* Opacity */}
+              <div className="control-field">
+                <div className="control-field-top">
+                  <label htmlFor="particle-opacity" className="control-label">Opacity</label>
+                  <span className="control-value-badge" data-testid="opacity-val">{(particles.opacity ?? 0.9).toFixed(2)}</span>
+                </div>
+                <input
+                  id="particle-opacity"
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={particles.opacity ?? 0.9}
+                  onChange={(e) => setParticles((p) => ({ ...p, opacity: Number(e.target.value) }))}
+                  className="control-slider"
+                  aria-label="Particle opacity"
+                />
+              </div>
+
+              {/* Direction */}
+              <div className="control-field">
+                <div className="control-field-top">
+                  <label htmlFor="particle-direction" className="control-label">Movement Direction</label>
+                </div>
+                <select
+                  id="particle-direction"
+                  value={particles.direction ?? 'down'}
+                  onChange={(e) =>
+                    setParticles((p) => ({
+                      ...p,
+                      direction: e.target.value as ParticleSettings['direction'],
+                    }))
+                  }
+                  className="control-select"
+                  aria-label="Particle movement direction"
+                >
+                  <option value="down">Down (Falling)</option>
+                  <option value="up">Up (Rising)</option>
+                  <option value="left">Left (Drifting West)</option>
+                  <option value="right">Right (Drifting East)</option>
+                  <option value="random">Random (Floating)</option>
+                </select>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* TAB 2: Theme & Colors */}
+        {activeTab === 'theme' && (
+          <>
+            {/* Theme Presets */}
+            <div className="control-section">
+              <h3 className="control-section-title">Theme Presets</h3>
+              <div className="control-preset-grid" role="group" aria-label="Theme presets">
+                {Object.entries(themePresets).map(([key, preset]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    className={`preset-btn-card ${activePresetId === key ? 'preset-btn-card--active' : ''}`}
+                    onClick={() => applyPreset(key)}
+                    aria-pressed={activePresetId === key}
+                  >
+                    <span>{preset.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Colors */}
+            <div className="control-section">
+              <h3 className="control-section-title">Color Palette</h3>
+
+              <div className="control-field">
+                <label htmlFor="primary-accent" className="control-label">Primary Accent</label>
+                <div className="control-color-row">
+                  <input
+                    id="primary-accent"
+                    type="color"
+                    value={theme.colors?.primaryAccent ?? '#f9a8d4'}
+                    onChange={(e) =>
+                      setTheme((t) => ({
+                        ...t,
+                        colors: { ...t.colors, primaryAccent: e.target.value },
+                      }))
+                    }
+                    className="color-input-swatch"
+                  />
+                  <input
+                    type="text"
+                    value={theme.colors?.primaryAccent ?? '#f9a8d4'}
+                    onChange={(e) =>
+                      setTheme((t) => ({
+                        ...t,
+                        colors: { ...t.colors, primaryAccent: e.target.value },
+                      }))
+                    }
+                    className="control-input"
+                  />
+                </div>
+              </div>
+
+              <div className="control-field">
+                <label htmlFor="particle-color" className="control-label">Particle Color</label>
+                <div className="control-color-row">
+                  <input
+                    id="particle-color"
+                    type="color"
+                    value={theme.colors?.particleColor ?? '#f9a8d4'}
+                    onChange={(e) =>
+                      setTheme((t) => ({
+                        ...t,
+                        colors: { ...t.colors, particleColor: e.target.value },
+                      }))
+                    }
+                    className="color-input-swatch"
+                  />
+                  <input
+                    type="text"
+                    value={theme.colors?.particleColor ?? '#f9a8d4'}
+                    onChange={(e) =>
+                      setTheme((t) => ({
+                        ...t,
+                        colors: { ...t.colors, particleColor: e.target.value },
+                      }))
+                    }
+                    className="control-input"
+                  />
+                </div>
+              </div>
+
+              <div className="control-field">
+                <label htmlFor="text-color" className="control-label">Text Color</label>
+                <div className="control-color-row">
+                  <input
+                    id="text-color"
+                    type="color"
+                    value={theme.colors?.textColor ?? '#ffffff'}
+                    onChange={(e) =>
+                      setTheme((t) => ({
+                        ...t,
+                        colors: { ...t.colors, textColor: e.target.value },
+                      }))
+                    }
+                    className="color-input-swatch"
+                  />
+                  <input
+                    type="text"
+                    value={theme.colors?.textColor ?? '#ffffff'}
+                    onChange={(e) =>
+                      setTheme((t) => ({
+                        ...t,
+                        colors: { ...t.colors, textColor: e.target.value },
+                      }))
+                    }
+                    className="control-input"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Background */}
+            <div className="control-section">
+              <h3 className="control-section-title">Background & Media</h3>
+
+              <div className="control-field">
+                <label htmlFor="bg-type" className="control-label">Background Style</label>
+                <select
+                  id="bg-type"
+                  value={theme.background?.type ?? 'gradient'}
+                  onChange={(e) =>
+                    setTheme((t) => ({
+                      ...t,
+                      background: {
+                        ...t.background,
+                        type: e.target.value as 'solid' | 'gradient',
+                      },
+                    }))
+                  }
+                  className="control-select"
+                >
+                  <option value="gradient">Custom Gradient</option>
+                  <option value="solid">Solid Color</option>
+                </select>
+              </div>
+
+              {theme.background?.type === 'solid' ? (
+                <div className="control-field">
+                  <label htmlFor="bg-solid" className="control-label">Solid Color</label>
+                  <div className="control-color-row">
+                    <input
+                      id="bg-solid"
+                      type="color"
+                      value={theme.background?.solidColor ?? '#24141f'}
+                      onChange={(e) =>
+                        setTheme((t) => ({
+                          ...t,
+                          background: { ...t.background, solidColor: e.target.value },
+                        }))
+                      }
+                      className="color-input-swatch"
+                    />
+                    <input
+                      type="text"
+                      value={theme.background?.solidColor ?? '#24141f'}
+                      onChange={(e) =>
+                        setTheme((t) => ({
+                          ...t,
+                          background: { ...t.background, solidColor: e.target.value },
+                        }))
+                      }
+                      className="control-input"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="control-field">
+                  <label htmlFor="bg-gradient" className="control-label">CSS Gradient</label>
+                  <input
+                    id="bg-gradient"
+                    type="text"
+                    value={theme.background?.gradient ?? ''}
+                    placeholder="e.g. linear-gradient(145deg, #1d2b3b 0%, #111b26 100%)"
+                    onChange={(e) =>
+                      setTheme((t) => ({
+                        ...t,
+                        background: { ...t.background, gradient: e.target.value },
+                      }))
+                    }
+                    className="control-input"
+                  />
+                </div>
+              )}
+
+              <div className="control-field">
+                <label htmlFor="video-url" className="control-label">Optional Video URL</label>
+                <input
+                  id="video-url"
+                  type="text"
+                  placeholder="https://example.com/ambient.mp4"
+                  value={theme.background?.videoUrl ?? ''}
+                  onChange={(e) =>
+                    setTheme((t) => ({
+                      ...t,
+                      background: { ...t.background, videoUrl: e.target.value || undefined },
+                    }))
+                  }
+                  className="control-input"
+                />
+              </div>
+            </div>
+
+            {/* Typography */}
+            <div className="control-section">
+              <h3 className="control-section-title">Typography</h3>
+              <div className="control-field">
+                <label htmlFor="font-family" className="control-label">Font Family</label>
+                <select
+                  id="font-family"
+                  value={theme.typography?.fontFamily ?? 'Inter, ui-sans-serif, system-ui, sans-serif'}
+                  onChange={(e) =>
+                    setTheme((t) => ({
+                      ...t,
+                      typography: { ...t.typography, fontFamily: e.target.value },
+                    }))
+                  }
+                  className="control-select"
+                >
+                  <option value="Inter, ui-sans-serif, system-ui, sans-serif">Modern Sans-Serif (Inter)</option>
+                  <option value='ui-serif, Georgia, Cambria, "Times New Roman", Times, serif'>Elegant Serif (Georgia)</option>
+                  <option value="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">Monospace (Code / Minimal)</option>
+                  <option value="system-ui, -apple-system, sans-serif">Native System UI</option>
+                </select>
+              </div>
+
+              <div className="control-field">
+                <label htmlFor="heading-size" className="control-label">Heading Size</label>
+                <input
+                  id="heading-size"
+                  type="text"
+                  value={theme.typography?.headingSize ?? 'clamp(2rem, 6vw, 4rem)'}
+                  onChange={(e) =>
+                    setTheme((t) => ({
+                      ...t,
+                      typography: { ...t.typography, headingSize: e.target.value },
+                    }))
+                  }
+                  className="control-input"
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* TAB 3: Layered Effects */}
+        {activeTab === 'effects' && (
+          <div className="control-section">
+            <h3 className="control-section-title">Effect Combinations & Layers</h3>
+
+            <div className="toggle-row">
+              <label htmlFor="disable-particles-toggle" className="toggle-label">
+                Disable Particle Animations
+              </label>
+              <input
+                id="disable-particles-toggle"
+                type="checkbox"
+                checked={theme.disableParticles ?? false}
+                onChange={(e) => setTheme((t) => ({ ...t, disableParticles: e.target.checked }))}
+                className="toggle-switch"
+                aria-label="Disable particle animations"
+              />
+            </div>
+
+            <div className="control-field">
+              <label htmlFor="primary-effect" className="control-label">Base Effect (Layer 1)</label>
+              <select
+                id="primary-effect"
+                value={baseSeason.effect ?? 'sakura'}
+                onChange={(e) => {
+                  const newEffect = e.target.value as SeasonalEffect;
+                  // Update current season's effect
+                  baseSeason.effect = newEffect;
+                  setTheme((t) => ({ ...t }));
+                }}
+                className="control-select"
+                disabled={theme.disableParticles}
               >
-                <span>{s.symbol}</span>
-                <span>{s.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Particle Settings Controls */}
-        <div className="control-section">
-          <h3 className="control-section-title">Particle Configuration</h3>
-
-          {/* Density */}
-          <div className="control-field">
-            <div className="control-field-top">
-              <label htmlFor="particle-density" className="control-label">
-                Density
-              </label>
-              <span className="control-value-badge" data-testid="density-val">
-                {particles.density}
-              </span>
+                <option value="sakura">Sakura Blossoms</option>
+                <option value="leaves">Autumn Leaves</option>
+                <option value="rain">Window Rain</option>
+                <option value="snow">Winter Snow</option>
+                <option value="sparkles">Golden Sparkles</option>
+                <option value="fireflies">Floating Fireflies</option>
+                <option value="none">None</option>
+              </select>
             </div>
-            <input
-              id="particle-density"
-              type="range"
-              min="0"
-              max="100"
-              step="1"
-              value={particles.density ?? 35}
-              onChange={(e) => setParticles((p) => ({ ...p, density: Number(e.target.value) }))}
-              className="control-slider"
-              aria-label="Particle density"
-            />
-          </div>
 
-          {/* Speed */}
-          <div className="control-field">
-            <div className="control-field-top">
-              <label htmlFor="particle-speed" className="control-label">
-                Speed Multiplier
-              </label>
-              <span className="control-value-badge" data-testid="speed-val">
-                {(particles.speed ?? 1).toFixed(2)}x
-              </span>
+            <div className="control-field">
+              <label htmlFor="secondary-effect" className="control-label">Secondary Layer (Layer 2)</label>
+              <select
+                id="secondary-effect"
+                value={secondaryEffect}
+                onChange={(e) => setSecondaryEffect(e.target.value as SeasonalEffect)}
+                className="control-select"
+                disabled={theme.disableParticles}
+              >
+                <option value="none">None (Single Effect)</option>
+                <option value="sparkles">✦ Sparkles (Complements Sakura, Snow, Fireflies)</option>
+                <option value="rain">🌧️ Rain (Complements Autumn Leaves)</option>
+                <option value="fireflies">🌙 Fireflies</option>
+                <option value="snow">❄️ Snow</option>
+                <option value="leaves">🍂 Leaves</option>
+                <option value="sakura">🌸 Sakura</option>
+              </select>
             </div>
-            <input
-              id="particle-speed"
-              type="range"
-              min="0.25"
-              max="3"
-              step="0.05"
-              value={particles.speed ?? 1}
-              onChange={(e) => setParticles((p) => ({ ...p, speed: Number(e.target.value) }))}
-              className="control-slider"
-              aria-label="Particle speed multiplier"
-            />
-          </div>
 
-          {/* Size */}
-          <div className="control-field">
-            <div className="control-field-top">
-              <label htmlFor="particle-size" className="control-label">
-                Particle Size
-              </label>
-              <span className="control-value-badge" data-testid="size-val">
-                {particles.size}px
-              </span>
-            </div>
-            <input
-              id="particle-size"
-              type="range"
-              min="4"
-              max="60"
-              step="1"
-              value={particles.size ?? 16}
-              onChange={(e) => setParticles((p) => ({ ...p, size: Number(e.target.value) }))}
-              className="control-slider"
-              aria-label="Particle size in pixels"
-            />
+            {secondaryEffect !== 'none' && !theme.disableParticles && (
+              <div className="control-field" style={{ paddingLeft: '8px', borderLeft: '2px solid #f9a8d4' }}>
+                <div className="control-field-top">
+                  <label htmlFor="sec-density" className="control-label">Layer 2 Density</label>
+                  <span className="control-value-badge">{secondaryParticles.density}</span>
+                </div>
+                <input
+                  id="sec-density"
+                  type="range"
+                  min="5"
+                  max="50"
+                  value={secondaryParticles.density ?? 18}
+                  onChange={(e) => setSecondaryParticles((p) => ({ ...p, density: Number(e.target.value) }))}
+                  className="control-slider"
+                />
+              </div>
+            )}
           </div>
-
-          {/* Opacity */}
-          <div className="control-field">
-            <div className="control-field-top">
-              <label htmlFor="particle-opacity" className="control-label">
-                Opacity
-              </label>
-              <span className="control-value-badge" data-testid="opacity-val">
-                {(particles.opacity ?? 0.9).toFixed(2)}
-              </span>
-            </div>
-            <input
-              id="particle-opacity"
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={particles.opacity ?? 0.9}
-              onChange={(e) => setParticles((p) => ({ ...p, opacity: Number(e.target.value) }))}
-              className="control-slider"
-              aria-label="Particle opacity"
-            />
-          </div>
-
-          {/* Direction */}
-          <div className="control-field">
-            <div className="control-field-top">
-              <label htmlFor="particle-direction" className="control-label">
-                Movement Direction
-              </label>
-            </div>
-            <select
-              id="particle-direction"
-              value={particles.direction ?? 'down'}
-              onChange={(e) =>
-                setParticles((p) => ({
-                  ...p,
-                  direction: e.target.value as ParticleSettings['direction'],
-                }))
-              }
-              className="control-select"
-              aria-label="Particle movement direction"
-            >
-              <option value="down">Down (Falling)</option>
-              <option value="up">Up (Rising)</option>
-              <option value="left">Left (Drifting West)</option>
-              <option value="right">Right (Drifting East)</option>
-              <option value="random">Random (Floating)</option>
-            </select>
-          </div>
-        </div>
+        )}
 
         {/* Copy & Export Actions */}
         <div className="control-actions-grid">
           <button
             type="button"
             className="action-btn action-btn--primary"
-            onClick={() => copyToClipboard(generateReactCode(activeCustomSeason, particles), 'React Component')}
+            onClick={() => copyToClipboard(generateReactCode(activeCustomSeason, particles, theme, activeEffects), 'React Component')}
           >
             📋 Copy React Code
           </button>
           <button
             type="button"
             className="action-btn action-btn--secondary"
-            onClick={() => copyToClipboard(generateConfigCode(activeCustomSeason, particles), 'Configuration JSON')}
+            onClick={() => copyToClipboard(generateConfigCode(activeCustomSeason, particles, theme, activeEffects), 'Configuration JSON')}
           >
             ⚙️ Copy Configuration
           </button>

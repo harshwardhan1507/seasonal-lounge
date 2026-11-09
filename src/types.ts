@@ -22,6 +22,49 @@ export interface ParticleSettings {
   direction?: 'up' | 'down' | 'left' | 'right' | 'random';
 }
 
+export interface EffectLayer {
+  effect: SeasonalEffect;
+  particles?: ParticleSettings;
+  accent?: string;
+}
+
+export interface SeasonalThemeBackground {
+  type?: 'solid' | 'gradient';
+  solidColor?: string;
+  gradient?: string;
+  gradientDirection?: string;
+  gradientColors?: string[];
+  fallbackColor?: string;
+  videoUrl?: string;
+}
+
+export interface SeasonalThemeColors {
+  primaryAccent?: string;
+  secondaryAccent?: string;
+  particleColor?: string;
+  textColor?: string;
+  controlBackground?: string;
+  controlText?: string;
+  controlBorder?: string;
+}
+
+export interface SeasonalThemeTypography {
+  fontFamily?: string;
+  headingSize?: string;
+  bodySize?: string;
+  fontWeight?: string | number;
+}
+
+export interface SeasonalTheme {
+  id?: string;
+  label?: string;
+  background?: SeasonalThemeBackground;
+  colors?: SeasonalThemeColors;
+  typography?: SeasonalThemeTypography;
+  effects?: EffectLayer[];
+  disableParticles?: boolean;
+}
+
 export type SeasonDefinition = {
   id: string;
   label: string;
@@ -34,6 +77,8 @@ export type SeasonDefinition = {
   background?: string;
   symbol?: ReactNode;
   particles?: ParticleSettings;
+  theme?: SeasonalTheme;
+  effects?: EffectLayer[];
 };
 
 export type SeasonalLoungeProps = {
@@ -47,6 +92,7 @@ export type SeasonalLoungeProps = {
   calmModeLabel?: string;
   onSeasonChange?: (season: SeasonDefinition) => void;
   style?: CSSProperties;
+  theme?: SeasonalTheme;
 };
 
 export type SeasonalOverlayProps = {

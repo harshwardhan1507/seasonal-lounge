@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented here.
 
+## [1.3.0] - 2026-11-09
+
+### Added
+
+- Advanced Theme Builder system (`SeasonalTheme`, `SeasonalThemeBackground`, `SeasonalThemeColors`, `SeasonalThemeTypography`)
+- Composable multi-layer effects architecture (`EffectLayer`) supporting combined atmospheric animations (e.g. Sakura + Sparkles, Leaves + Rain)
+- Six curated theme presets: Sakura Dream, Cozy Autumn, Midnight Rain, Winter Silence, Golden Summer, and Firefly Garden
+- Background configuration for solid colors, CSS gradients, fallback colors, and video URLs
+- Color tokens for primary accent, secondary accent, particle color, text color, and control elements
+- Typography settings for font family, heading size, body text size, and font weight via CSS variables
+- Toggle for completely disabling particles (`disableParticles`)
+- Three-tab visual playground organization: Particles, Theme & Colors, and Layered Effects
+- Unit and integration tests for theme customization, layered rendering, and preset application
+
 ## [1.2.0] - 2026-11-09
 
 ### Added
