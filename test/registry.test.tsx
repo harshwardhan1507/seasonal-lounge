@@ -75,7 +75,7 @@ describe('shadcn-Style Component Registry (Milestone 5 - v2.0)', () => {
       const srcPath = path.join(rootDir, 'src', item.path);
       expect(fs.existsSync(srcPath)).toBe(true);
       const srcContent = fs.readFileSync(srcPath, 'utf-8');
-      expect(item.content).toBe(srcContent);
+      expect(item.content.replace(/\r\n/g, '\n')).toBe(srcContent.replace(/\r\n/g, '\n'));
     }
   });
 

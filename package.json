@@ -1,6 +1,6 @@
 {
   "name": "@harshwardhan1507/seasonal-lounge",
-  "version": "0.2.0",
+  "version": "2.0.0",
   "description": "A configurable React lounge with seasonal video, ambient audio loops, particle effects, and a calm full-screen mode.",
   "license": "MIT",
   "author": {

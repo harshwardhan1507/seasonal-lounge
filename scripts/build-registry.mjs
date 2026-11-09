@@ -26,7 +26,7 @@ export function buildRegistryItem() {
     if (!fs.existsSync(filePath)) {
       throw new Error(`Registry source file not found: ${filePath}`);
     }
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = fs.readFileSync(filePath, 'utf-8').replace(/\r\n/g, '\n');
     return {
       path: filename,
       content,
