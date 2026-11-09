@@ -132,6 +132,10 @@ npm run pack:dry
 
 Issues and pull requests are welcome. Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a change and follow the [Code of Conduct](./CODE_OF_CONDUCT.md).
 
+## Developer
+
+Seasonal Lounge was designed and developed by [Harsh Wardhan](https://harshwardhanportfolio.vercel.app). You can also find the developer on [GitHub](https://github.com/harshwardhan1507).
+
 ## License
 
 [MIT](./LICENSE) © 2026 Harsh Wardhan

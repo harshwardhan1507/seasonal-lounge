@@ -3,7 +3,10 @@
   "version": "0.2.0",
   "description": "A configurable React lounge with seasonal video, ambient audio loops, particle effects, and a calm full-screen mode.",
   "license": "MIT",
-  "author": "Harsh Wardhan",
+  "author": {
+    "name": "Harsh Wardhan",
+    "url": "https://harshwardhanportfolio.vercel.app"
+  },
   "type": "module",
   "sideEffects": [
     "**/*.css"
