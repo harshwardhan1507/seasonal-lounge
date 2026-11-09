@@ -14,6 +14,14 @@ export type AudioSegment = {
   end: number;
 };
 
+export interface ParticleSettings {
+  density?: number;
+  speed?: number;
+  size?: number;
+  opacity?: number;
+  direction?: 'up' | 'down' | 'left' | 'right' | 'random';
+}
+
 export type SeasonDefinition = {
   id: string;
   label: string;
@@ -25,6 +33,7 @@ export type SeasonDefinition = {
   accent?: string;
   background?: string;
   symbol?: ReactNode;
+  particles?: ParticleSettings;
 };
 
 export type SeasonalLoungeProps = {
@@ -45,4 +54,6 @@ export type SeasonalOverlayProps = {
   accent?: string;
   count?: number;
   className?: string;
+  settings?: ParticleSettings;
+  particles?: ParticleSettings;
 };

@@ -147,6 +147,201 @@
   z-index: -2;
   pointer-events: none;
   overflow: hidden;
+  opacity: var(--particle-opacity, 1);
+}
+
+.seasonal-lounge__particles--dir-left .seasonal-lounge__particle,
+.seasonal-lounge__particles--dir-right .seasonal-lounge__particle,
+.seasonal-lounge__particles--dir-random .seasonal-lounge__particle {
+  top: var(--particle-top);
+}
+
+.seasonal-lounge__particles--dir-up .seasonal-lounge__particle {
+  top: auto;
+  bottom: -12%;
+}
+
+.seasonal-lounge__particle--leaves.seasonal-lounge__particle--dir-up,
+.seasonal-lounge__particle--sakura.seasonal-lounge__particle--dir-up {
+  animation-name: seasonal-rise;
+}
+
+.seasonal-lounge__particle--rain.seasonal-lounge__particle--dir-up {
+  animation-name: seasonal-rain-up;
+}
+
+.seasonal-lounge__particle--snow.seasonal-lounge__particle--dir-up {
+  animation-name: seasonal-snow-up;
+}
+
+.seasonal-lounge__particle--fireflies.seasonal-lounge__particle--dir-up {
+  animation-name: seasonal-firefly-up;
+}
+
+.seasonal-lounge__particle--sparkles.seasonal-lounge__particle--dir-up {
+  animation-name: seasonal-sparkle-up;
+}
+
+.seasonal-lounge__particle--fireflies.seasonal-lounge__particle--dir-down {
+  animation-name: seasonal-descend;
+}
+
+.seasonal-lounge__particle--sparkles.seasonal-lounge__particle--dir-down {
+  animation-name: seasonal-sparkle-down;
+}
+
+.seasonal-lounge__particle--leaves.seasonal-lounge__particle--dir-left,
+.seasonal-lounge__particle--sakura.seasonal-lounge__particle--dir-left {
+  animation-name: seasonal-drift-left;
+}
+
+.seasonal-lounge__particle--rain.seasonal-lounge__particle--dir-left {
+  animation-name: seasonal-rain-left;
+}
+
+.seasonal-lounge__particle--snow.seasonal-lounge__particle--dir-left {
+  animation-name: seasonal-snow-left;
+}
+
+.seasonal-lounge__particle--fireflies.seasonal-lounge__particle--dir-left {
+  animation-name: seasonal-firefly-left;
+}
+
+.seasonal-lounge__particle--sparkles.seasonal-lounge__particle--dir-left {
+  animation-name: seasonal-breeze-left;
+}
+
+.seasonal-lounge__particle--leaves.seasonal-lounge__particle--dir-right,
+.seasonal-lounge__particle--sakura.seasonal-lounge__particle--dir-right {
+  animation-name: seasonal-drift-right;
+}
+
+.seasonal-lounge__particle--rain.seasonal-lounge__particle--dir-right {
+  animation-name: seasonal-rain-right;
+}
+
+.seasonal-lounge__particle--snow.seasonal-lounge__particle--dir-right {
+  animation-name: seasonal-snow-right;
+}
+
+.seasonal-lounge__particle--fireflies.seasonal-lounge__particle--dir-right {
+  animation-name: seasonal-firefly-right;
+}
+
+.seasonal-lounge__particle--leaves.seasonal-lounge__particle--dir-random,
+.seasonal-lounge__particle--sakura.seasonal-lounge__particle--dir-random,
+.seasonal-lounge__particle--rain.seasonal-lounge__particle--dir-random,
+.seasonal-lounge__particle--snow.seasonal-lounge__particle--dir-random,
+.seasonal-lounge__particle--sparkles.seasonal-lounge__particle--dir-random {
+  animation-name: seasonal-wander;
+}
+
+@keyframes seasonal-rise {
+  0% { opacity: 0; transform: translate3d(0, 8vh, 0) rotate(0deg) scale(0.7); }
+  15% { opacity: 0.88; }
+  50% { transform: translate3d(calc(var(--particle-drift) * -0.35), -50vh, 0) rotate(160deg) scale(1); }
+  100% { opacity: 0.12; transform: translate3d(var(--particle-drift), -115vh, 0) rotate(460deg) scale(0.75); }
+}
+
+@keyframes seasonal-rain-up {
+  0% { opacity: 0; transform: translate3d(0, 14vh, 0) rotate(-8deg); }
+  12% { opacity: 0.7; }
+  100% { opacity: 0; transform: translate3d(-55px, -116vh, 0) rotate(-8deg); }
+}
+
+@keyframes seasonal-snow-up {
+  0% { opacity: 0; transform: translate3d(0, 10vh, 0) scale(0.55); }
+  12% { opacity: 0.8; }
+  100% { opacity: 0.1; transform: translate3d(var(--particle-drift), -110vh, 0) scale(1); }
+}
+
+@keyframes seasonal-firefly-up {
+  0% { opacity: 0.08; transform: translate3d(0, 10vh, 0) scale(0.7); }
+  50% { opacity: 0.9; transform: translate3d(var(--particle-drift), -50vh, 0) scale(1.15); }
+  100% { opacity: 0.08; transform: translate3d(calc(var(--particle-drift) * -0.4), -105vh, 0) scale(0.8); }
+}
+
+@keyframes seasonal-sparkle-up {
+  0% { opacity: 0; transform: translate3d(0, 10vh, 0) scale(0.7); }
+  50% { opacity: 0.85; transform: translate3d(var(--particle-drift), -50vh, 0) scale(1); }
+  100% { opacity: 0; transform: translate3d(calc(var(--particle-drift) * -0.5), -110vh, 0) scale(0.6); }
+}
+
+@keyframes seasonal-descend {
+  0% { opacity: 0.08; transform: translate3d(0, -5vh, 0) scale(0.7); }
+  50% { opacity: 0.9; transform: translate3d(var(--particle-drift), 50vh, 0) scale(1.15); }
+  100% { opacity: 0.08; transform: translate3d(calc(var(--particle-drift) * -0.5), 105vh, 0) scale(0.8); }
+}
+
+@keyframes seasonal-sparkle-down {
+  0% { opacity: 0; transform: translate3d(0, -8vh, 0) scale(0.7); }
+  50% { opacity: 0.85; transform: translate3d(var(--particle-drift), 50vh, 0) scale(1); }
+  100% { opacity: 0; transform: translate3d(calc(var(--particle-drift) * -0.5), 110vh, 0) scale(0.6); }
+}
+
+@keyframes seasonal-drift-left {
+  0% { opacity: 0; transform: translate3d(108vw, -4vh, 0) rotate(0deg) scale(0.7); }
+  15% { opacity: 0.88; }
+  50% { transform: translate3d(50vw, calc(var(--particle-drift) * 0.4), 0) rotate(-160deg) scale(1); }
+  100% { opacity: 0.12; transform: translate3d(-15vw, calc(var(--particle-drift) * 0.9), 0) rotate(-460deg) scale(0.75); }
+}
+
+@keyframes seasonal-rain-left {
+  0% { opacity: 0; transform: translate3d(108vw, var(--particle-drift), 0) rotate(65deg); }
+  12% { opacity: 0.7; }
+  100% { opacity: 0; transform: translate3d(-15vw, calc(var(--particle-drift) + 40px), 0) rotate(65deg); }
+}
+
+@keyframes seasonal-snow-left {
+  0% { opacity: 0; transform: translate3d(108vw, -2vh, 0) scale(0.55); }
+  12% { opacity: 0.8; }
+  100% { opacity: 0.1; transform: translate3d(-15vw, calc(var(--particle-drift) * 0.8), 0) scale(1); }
+}
+
+@keyframes seasonal-firefly-left {
+  0% { opacity: 0.08; transform: translate3d(105vw, 0, 0) scale(0.7); }
+  50% { opacity: 0.9; transform: translate3d(50vw, calc(var(--particle-drift) * 0.6), 0) scale(1.15); }
+  100% { opacity: 0.08; transform: translate3d(-12vw, calc(var(--particle-drift) * -0.4), 0) scale(0.8); }
+}
+
+@keyframes seasonal-breeze-left {
+  0% { opacity: 0; transform: translate3d(108vw, 18px, 0) rotate(0deg) scale(0.7); }
+  14% { opacity: 0.78; }
+  50% { opacity: 0.5; transform: translate3d(45vw, -22px, 0) rotate(-170deg) scale(1); }
+  100% { opacity: 0; transform: translate3d(-15vw, -12px, 0) rotate(-360deg) scale(0.55); }
+}
+
+@keyframes seasonal-drift-right {
+  0% { opacity: 0; transform: translate3d(-12vw, -4vh, 0) rotate(0deg) scale(0.7); }
+  15% { opacity: 0.88; }
+  50% { transform: translate3d(50vw, calc(var(--particle-drift) * 0.4), 0) rotate(160deg) scale(1); }
+  100% { opacity: 0.12; transform: translate3d(112vw, calc(var(--particle-drift) * 0.9), 0) rotate(460deg) scale(0.75); }
+}
+
+@keyframes seasonal-rain-right {
+  0% { opacity: 0; transform: translate3d(-12vw, var(--particle-drift), 0) rotate(-65deg); }
+  12% { opacity: 0.7; }
+  100% { opacity: 0; transform: translate3d(112vw, calc(var(--particle-drift) + 40px), 0) rotate(-65deg); }
+}
+
+@keyframes seasonal-snow-right {
+  0% { opacity: 0; transform: translate3d(-12vw, -2vh, 0) scale(0.55); }
+  12% { opacity: 0.8; }
+  100% { opacity: 0.1; transform: translate3d(112vw, calc(var(--particle-drift) * 0.8), 0) scale(1); }
+}
+
+@keyframes seasonal-firefly-right {
+  0% { opacity: 0.08; transform: translate3d(-10vw, 0, 0) scale(0.7); }
+  50% { opacity: 0.9; transform: translate3d(50vw, calc(var(--particle-drift) * 0.6), 0) scale(1.15); }
+  100% { opacity: 0.08; transform: translate3d(108vw, calc(var(--particle-drift) * -0.4), 0) scale(0.8); }
+}
+
+@keyframes seasonal-wander {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) scale(0.7); }
+  20% { opacity: 0.85; }
+  50% { transform: translate3d(var(--particle-drift), calc(var(--particle-drift) * -0.6), 0) scale(1.05); opacity: 0.7; }
+  80% { transform: translate3d(calc(var(--particle-drift) * -0.7), calc(var(--particle-drift) * 0.5), 0) scale(0.9); opacity: 0.5; }
+  100% { opacity: 0; transform: translate3d(calc(var(--particle-drift) * 0.3), var(--particle-drift), 0) scale(0.65); }
 }
 
 .seasonal-lounge__particle {

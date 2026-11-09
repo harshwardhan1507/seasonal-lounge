@@ -122,7 +122,7 @@ export function SeasonalLounge({
           aria-label={`${season.label} seasonal scene`}
         />
       )}
-      <SeasonalParticles effect={season.effect ?? 'none'} accent={season.accent} />
+      <SeasonalParticles effect={season.effect ?? 'none'} accent={season.accent} settings={season.particles} />
       <div className="seasonal-lounge__shade" />
 
       <div className="seasonal-lounge__topbar">

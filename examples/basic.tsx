@@ -13,6 +13,13 @@ const seasons: SeasonDefinition[] = [
     accent: '#f9a8d4',
     background: '#3b2030',
     symbol: '🌸',
+    particles: {
+      density: 36,
+      speed: 1.2,
+      size: 20,
+      opacity: 0.9,
+      direction: 'down',
+    },
   },
   {
     id: 'rain',

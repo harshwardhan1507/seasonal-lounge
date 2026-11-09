@@ -100,6 +100,35 @@ export function RestSpace() {
 | `accent` | No | Particle and selection color |
 | `background` | No | CSS background used while media loads |
 | `symbol` | No | Emoji, icon, or any React node |
+| `particles` | No | Custom `ParticleSettings` (density, speed, size, opacity, direction) |
+
+## Particle customization
+
+Each season can configure particle animations independently with `ParticleSettings`:
+
+```tsx
+import {
+  SeasonalLounge,
+  type SeasonDefinition,
+  type ParticleSettings,
+} from '@harshwardhan1507/seasonal-lounge';
+import '@harshwardhan1507/seasonal-lounge/styles.css';
+
+const gentleBlossoms: SeasonDefinition = {
+  id: 'gentle-spring',
+  label: 'Gentle Spring',
+  description: 'Soft sakura floating upwards in a spring breeze.',
+  effect: 'sakura',
+  accent: '#f9a8d4',
+  particles: {
+    density: 40,      // Number of particles: 0 to 100
+    speed: 0.8,       // Animation speed multiplier: 0.25 to 3
+    size: 22,         // Particle size in pixels
+    opacity: 0.85,    // Particle transparency: 0 to 1
+    direction: 'up',  // 'up' | 'down' | 'left' | 'right' | 'random'
+  },
+};
+```
 
 ## Props
 
