@@ -1,5 +1,5 @@
-import { SeasonalLounge, type SeasonDefinition } from '@harshwardhan1507/seasonal-lounge';
-import '@harshwardhan1507/seasonal-lounge/styles.css';
+import { SeasonalLounge, type SeasonDefinition } from '@harutoxokura/seasonal-lounge';
+import '@harutoxokura/seasonal-lounge/styles.css';
 
 const seasons: SeasonDefinition[] = [
   {

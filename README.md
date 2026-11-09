@@ -39,7 +39,7 @@ Seasonal Lounge supports two installation pathways. See the full [Installation G
 ### Method 1: Traditional npm package
 
 ```bash
-npm install @harshwardhan1507/seasonal-lounge
+npm install @harutoxokura/seasonal-lounge
 ```
 
 Then import the component and styles:
@@ -48,8 +48,8 @@ Then import the component and styles:
 import {
   SeasonalLounge,
   seasonalPresets,
-} from '@harshwardhan1507/seasonal-lounge';
-import '@harshwardhan1507/seasonal-lounge/styles.css';
+} from '@harutoxokura/seasonal-lounge';
+import '@harutoxokura/seasonal-lounge/styles.css';
 
 export function RestSpace() {
   return <SeasonalLounge seasons={seasonalPresets} initialSeasonId="spring" />;
@@ -83,8 +83,8 @@ The included presets are CSS-only, so they work without downloading media. To at
 import {
   SeasonalLounge,
   type SeasonDefinition,
-} from '@harshwardhan1507/seasonal-lounge';
-import '@harshwardhan1507/seasonal-lounge/styles.css';
+} from '@harutoxokura/seasonal-lounge';
+import '@harutoxokura/seasonal-lounge/styles.css';
 
 const seasons: SeasonDefinition[] = [
   {
@@ -117,16 +117,16 @@ The interactive playground allows configuring any atmosphere visually and export
 
 ```bash
 # npm
-npm install @harshwardhan1507/seasonal-lounge
+npm install @harutoxokura/seasonal-lounge
 
 # pnpm
-pnpm add @harshwardhan1507/seasonal-lounge
+pnpm add @harutoxokura/seasonal-lounge
 
 # yarn
-yarn add @harshwardhan1507/seasonal-lounge
+yarn add @harutoxokura/seasonal-lounge
 
 # bun
-bun add @harshwardhan1507/seasonal-lounge
+bun add @harutoxokura/seasonal-lounge
 ```
 
 ## Theme Builder and layered effects
@@ -138,8 +138,8 @@ import {
   SeasonalLounge,
   themePresets,
   type SeasonDefinition,
-} from '@harshwardhan1507/seasonal-lounge';
-import '@harshwardhan1507/seasonal-lounge/styles.css';
+} from '@harutoxokura/seasonal-lounge';
+import '@harutoxokura/seasonal-lounge/styles.css';
 
 // Use a built-in curated preset (Sakura Dream, Cozy Autumn, Midnight Rain, etc.)
 export function DreamySpace() {
@@ -214,8 +214,8 @@ import {
   SeasonalLounge,
   type SeasonDefinition,
   type ParticleSettings,
-} from '@harshwardhan1507/seasonal-lounge';
-import '@harshwardhan1507/seasonal-lounge/styles.css';
+} from '@harutoxokura/seasonal-lounge';
+import '@harutoxokura/seasonal-lounge/styles.css';
 
 const gentleBlossoms: SeasonDefinition = {
   id: 'gentle-spring',

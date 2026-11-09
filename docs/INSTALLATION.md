@@ -9,7 +9,7 @@ Seasonal Lounge provides two flexible installation methods depending on your app
 
 ## Comparison
 
-| Feature | npm Package (`@harshwardhan1507/seasonal-lounge`) | Source Code (shadcn registry) |
+| Feature | npm Package (`@harutoxokura/seasonal-lounge`) | Source Code (shadcn registry) |
 | --- | --- | --- |
 | **Setup Speed** | Instant (`npm install`) | Instant (`npx shadcn add`) |
 | **Location** | `node_modules` | `components/seasonal-lounge/` |
@@ -27,23 +27,23 @@ Seasonal Lounge provides two flexible installation methods depending on your app
 
 ```bash
 # npm
-npm install @harshwardhan1507/seasonal-lounge
+npm install @harutoxokura/seasonal-lounge
 
 # pnpm
-pnpm add @harshwardhan1507/seasonal-lounge
+pnpm add @harutoxokura/seasonal-lounge
 
 # yarn
-yarn add @harshwardhan1507/seasonal-lounge
+yarn add @harutoxokura/seasonal-lounge
 
 # bun
-bun add @harshwardhan1507/seasonal-lounge
+bun add @harutoxokura/seasonal-lounge
 ```
 
 ### 2. Import component and styles
 
 ```tsx
-import { SeasonalLounge, seasonalPresets } from '@harshwardhan1507/seasonal-lounge';
-import '@harshwardhan1507/seasonal-lounge/styles.css';
+import { SeasonalLounge, seasonalPresets } from '@harutoxokura/seasonal-lounge';
+import '@harutoxokura/seasonal-lounge/styles.css';
 
 export function App() {
   return (

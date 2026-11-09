@@ -89,7 +89,7 @@ describe('Interactive Visual Playground (Milestone 2 - v1.2)', () => {
     fireEvent.click(copyReactBtn);
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-      expect.stringContaining("from '@harshwardhan1507/seasonal-lounge'"),
+      expect.stringContaining("from '@harutoxokura/seasonal-lounge'"),
     );
 
     await waitFor(() => {
@@ -117,7 +117,7 @@ describe('Interactive Visual Playground (Milestone 2 - v1.2)', () => {
     fireEvent.click(copyInstallBtn);
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-      'npm install @harshwardhan1507/seasonal-lounge',
+      'npm install @harutoxokura/seasonal-lounge',
     );
 
     await waitFor(() => {
@@ -130,10 +130,10 @@ describe('Interactive Visual Playground (Milestone 2 - v1.2)', () => {
     const particles = { density: 40, speed: 1.5, size: 20, opacity: 0.8, direction: 'up' as const };
 
     it('generates valid install commands for all package managers', () => {
-      expect(getInstallCommand('npm')).toBe('npm install @harshwardhan1507/seasonal-lounge');
-      expect(getInstallCommand('pnpm')).toBe('pnpm add @harshwardhan1507/seasonal-lounge');
-      expect(getInstallCommand('yarn')).toBe('yarn add @harshwardhan1507/seasonal-lounge');
-      expect(getInstallCommand('bun')).toBe('bun add @harshwardhan1507/seasonal-lounge');
+      expect(getInstallCommand('npm')).toBe('npm install @harutoxokura/seasonal-lounge');
+      expect(getInstallCommand('pnpm')).toBe('pnpm add @harutoxokura/seasonal-lounge');
+      expect(getInstallCommand('yarn')).toBe('yarn add @harutoxokura/seasonal-lounge');
+      expect(getInstallCommand('bun')).toBe('bun add @harutoxokura/seasonal-lounge');
     });
 
     it('generates valid JSON config', () => {
@@ -146,8 +146,8 @@ describe('Interactive Visual Playground (Milestone 2 - v1.2)', () => {
 
     it('generates valid React component code using public API', () => {
       const code = generateReactCode(season, particles);
-      expect(code).toContain("import { SeasonalLounge, type SeasonDefinition } from '@harshwardhan1507/seasonal-lounge'");
-      expect(code).toContain("import '@harshwardhan1507/seasonal-lounge/styles.css'");
+      expect(code).toContain("import { SeasonalLounge, type SeasonDefinition } from '@harutoxokura/seasonal-lounge'");
+      expect(code).toContain("import '@harutoxokura/seasonal-lounge/styles.css'");
       expect(code).toContain(`id: '${season.id}'`);
       expect(code).toContain('"density": 40');
       expect(code).toContain('<SeasonalLounge');

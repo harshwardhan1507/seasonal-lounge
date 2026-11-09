@@ -50,8 +50,8 @@ describe('Code Export and Installation Generator (Milestone 4 - v1.4)', () => {
       const code = generateReactCode(season, particles, theme, effects);
 
       // Public API imports
-      expect(code).toContain("import { SeasonalLounge, type SeasonDefinition } from '@harshwardhan1507/seasonal-lounge';");
-      expect(code).toContain("import '@harshwardhan1507/seasonal-lounge/styles.css';");
+      expect(code).toContain("import { SeasonalLounge, type SeasonDefinition } from '@harutoxokura/seasonal-lounge';");
+      expect(code).toContain("import '@harutoxokura/seasonal-lounge/styles.css';");
 
       // Preserves configuration
       expect(code).toContain(`id: '${season.id}'`);
@@ -137,7 +137,7 @@ describe('Code Export and Installation Generator (Milestone 4 - v1.4)', () => {
       // Switch to Installation format
       const installFormatBtn = screen.getByRole('button', { name: /^installation$/i });
       fireEvent.click(installFormatBtn);
-      expect(screen.getByText('npm install @harshwardhan1507/seasonal-lounge')).toBeInTheDocument();
+      expect(screen.getByText('npm install @harutoxokura/seasonal-lounge')).toBeInTheDocument();
     });
 
     it('copies TSX and triggers download from the export tab', async () => {
@@ -167,10 +167,10 @@ describe('Code Export and Installation Generator (Milestone 4 - v1.4)', () => {
 
       const pmSelect = screen.getByLabelText(/package manager/i);
       fireEvent.change(pmSelect, { target: { value: 'pnpm' } });
-      expect(screen.getByText('pnpm add @harshwardhan1507/seasonal-lounge')).toBeInTheDocument();
+      expect(screen.getByText('pnpm add @harutoxokura/seasonal-lounge')).toBeInTheDocument();
 
       fireEvent.change(pmSelect, { target: { value: 'bun' } });
-      expect(screen.getByText('bun add @harshwardhan1507/seasonal-lounge')).toBeInTheDocument();
+      expect(screen.getByText('bun add @harutoxokura/seasonal-lounge')).toBeInTheDocument();
     });
   });
 });

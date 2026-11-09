@@ -10,14 +10,14 @@ export const REGISTRY_RAW_GITHUB_URL =
 export function getInstallCommand(pm: PackageManager = 'npm'): string {
   switch (pm) {
     case 'pnpm':
-      return 'pnpm add @harshwardhan1507/seasonal-lounge';
+      return 'pnpm add @harutoxokura/seasonal-lounge';
     case 'yarn':
-      return 'yarn add @harshwardhan1507/seasonal-lounge';
+      return 'yarn add @harutoxokura/seasonal-lounge';
     case 'bun':
-      return 'bun add @harshwardhan1507/seasonal-lounge';
+      return 'bun add @harutoxokura/seasonal-lounge';
     case 'npm':
     default:
-      return 'npm install @harshwardhan1507/seasonal-lounge';
+      return 'npm install @harutoxokura/seasonal-lounge';
   }
 }
 
@@ -102,8 +102,8 @@ export function generateReactCode(
 import { SeasonalLounge, type SeasonDefinition } from '@/components/seasonal-lounge';
 import '@/components/seasonal-lounge/styles.css';`
       : `import React from 'react';
-import { SeasonalLounge, type SeasonDefinition } from '@harshwardhan1507/seasonal-lounge';
-import '@harshwardhan1507/seasonal-lounge/styles.css';`;
+import { SeasonalLounge, type SeasonDefinition } from '@harutoxokura/seasonal-lounge';
+import '@harutoxokura/seasonal-lounge/styles.css';`;
 
   return `${imports}
 

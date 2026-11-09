@@ -874,7 +874,7 @@ export function Playground() {
                     </button>
 
                     <p className="export-guidance-note">
-                      <strong>Styles:</strong> Import <code>@harshwardhan1507/seasonal-lounge/styles.css</code> in your app root or component file.
+                      <strong>Styles:</strong> Import <code>@harutoxokura/seasonal-lounge/styles.css</code> in your app root or component file.
                     </p>
                   </>
                 ) : (

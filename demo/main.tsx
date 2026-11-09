@@ -21,7 +21,7 @@ export function Demo() {
             GitHub ↗
           </a>
           <a
-            href="https://www.npmjs.com/package/@harshwardhan1507/seasonal-lounge"
+            href="https://www.npmjs.com/package/@harutoxokura/seasonal-lounge"
             target="_blank"
             rel="noreferrer"
           >
