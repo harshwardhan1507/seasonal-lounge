@@ -1,16 +1,27 @@
 # Seasonal Lounge
 
 [![CI](https://github.com/harshwardhan1507/seasonal-lounge/actions/workflows/ci.yml/badge.svg)](https://github.com/harshwardhan1507/seasonal-lounge/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@harutoxokura/seasonal-lounge?color=f9a8d4)](https://www.npmjs.com/package/@harutoxokura/seasonal-lounge)
 [![Demo](https://img.shields.io/badge/demo-Vercel-f9a8d4)](https://seasonal-lounge.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-7dd3fc.svg)](./LICENSE)
 
-A configurable React lounge for seasonal video scenes, ambient audio highlights, particle effects, and a distraction-free full-screen calm mode.
+An open-source React component library and interactive visual theme builder for creating immersive seasonal environments with animated particles, ambient media, and calm full-screen experiences.
 
 ![Seasonal Lounge spring preview](./docs/seasonal-lounge-preview.png)
 
 Seasonal Lounge grew out of the interactive Lounge in [Harsh Wardhan's portfolio](https://harshwardhanportfolio.vercel.app). The library keeps the reusable experience while leaving all media choices to the application using it.
 
 **[View the live demo →](https://seasonal-lounge.vercel.app/)**
+
+## What's new in v2.0
+
+- A live visual playground with instant seasonal previews
+- Advanced particle controls for density, speed, size, opacity, and direction
+- A theme builder for backgrounds, gradients, colors, typography, and layered effects
+- Production-ready TSX and JSON export with copy and download actions
+- npm, pnpm, yarn, bun, and shadcn-style installation paths
+- Six curated themes spanning spring, summer, autumn, winter, rain, and night
+- 52 automated tests covering presets, particles, exports, registry output, and playground behavior
 
 ## Features
 
@@ -128,6 +139,10 @@ yarn add @harutoxokura/seasonal-lounge
 # bun
 bun add @harutoxokura/seasonal-lounge
 ```
+
+## Interactive playground
+
+The [live playground](https://seasonal-lounge.vercel.app/) is both the project demo and a developer tool. Pick a curated season, tune every particle property, compose effect layers, adjust the visual theme, and preview the result without editing code. The export panel then produces matching typed TSX or portable JSON, together with the correct install command and imports for the selected package manager.
 
 ## Theme Builder and layered effects
 
@@ -255,10 +270,29 @@ This package intentionally contains **no music, photos, or video**. Add only med
 
 ```bash
 npm install
+npm test
 npm run check
 npm run build
+npm run demo:build
 npm run pack:dry
 ```
+
+## Development and quality
+
+- **52 passing tests** across five Vitest suites
+- TypeScript validation with `tsc --noEmit`
+- Separate production builds for the package and interactive demo
+- Registry generation validated alongside every package build
+- Reduced-motion support and keyboard-accessible native controls
+- CSS-based particles and application-owned media keep the package lightweight
+
+## Project links
+
+- [Interactive playground](https://seasonal-lounge.vercel.app/)
+- [npm package](https://www.npmjs.com/package/@harutoxokura/seasonal-lounge)
+- [GitHub repository](https://github.com/harshwardhan1507/seasonal-lounge)
+- [shadcn registry item](https://seasonal-lounge.vercel.app/registry/seasonal-lounge.json)
+- [Installation guide](./docs/INSTALLATION.md)
 
 ## Contributing
 

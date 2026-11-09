@@ -1,7 +1,7 @@
 {
   "name": "@harutoxokura/seasonal-lounge",
   "version": "2.0.0",
-  "description": "A configurable React lounge with seasonal video, ambient audio loops, particle effects, and a calm full-screen mode.",
+  "description": "Customizable React seasonal environments with animated particles, ambient media, a live theme builder, and npm or shadcn installation.",
   "license": "MIT",
   "author": {
     "name": "Harsh Wardhan",
@@ -40,13 +40,20 @@
   },
   "keywords": [
     "react",
+    "react-components",
+    "component-library",
+    "theme-builder",
     "seasonal",
     "lounge",
     "ambient",
     "sakura",
     "fullscreen",
     "particles",
-    "typescript"
+    "particle-effects",
+    "animations",
+    "shadcn-ui",
+    "typescript",
+    "vite"
   ],
   "repository": {
     "type": "git",
@@ -55,7 +62,7 @@
   "bugs": {
     "url": "https://github.com/harshwardhan1507/seasonal-lounge/issues"
   },
-  "homepage": "https://github.com/harshwardhan1507/seasonal-lounge#readme",
+  "homepage": "https://seasonal-lounge.vercel.app/",
   "publishConfig": {
     "access": "public"
   },
