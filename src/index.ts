@@ -3,6 +3,7 @@ import './styles.css';
 export { SeasonalLounge } from './SeasonalLounge';
 export { SeasonalParticles } from './SeasonalParticles';
 export { configureSegmentedAudio, validateAudioSegment } from './audio';
+export { seasonalPresets } from './presets';
 export type {
   AudioSegment,
   SeasonDefinition,

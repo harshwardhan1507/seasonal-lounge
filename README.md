@@ -17,6 +17,7 @@ Seasonal Lounge grew out of the interactive Lounge in [Harsh Wardhan's portfolio
 - Seasonal video backgrounds
 - Optional ambient audio
 - Highlight loops using exact start and end times
+- Six included CSS-only presets: Autumn, Rain, Winter, Summer, Spring, and Night
 - Sakura, leaves, rain, snow, sparkles, and fireflies
 - Native full-screen mode with a fixed-position fallback
 - Automatic muted video playback
@@ -32,6 +33,20 @@ npm install @harshwardhan1507/seasonal-lounge
 ```
 
 Then import the component and styles:
+
+```tsx
+import {
+  SeasonalLounge,
+  seasonalPresets,
+} from '@harshwardhan1507/seasonal-lounge';
+import '@harshwardhan1507/seasonal-lounge/styles.css';
+
+export function RestSpace() {
+  return <SeasonalLounge seasons={seasonalPresets} initialSeasonId="spring" />;
+}
+```
+
+The included presets are CSS-only, so they work without downloading media. To attach your own licensed audio or video, extend a preset or create a custom season:
 
 ```tsx
 import {
@@ -59,6 +74,17 @@ export function RestSpace() {
   return <SeasonalLounge seasons={seasons} initialSeasonId="spring" />;
 }
 ```
+
+## Included seasons
+
+| Season | Effect | Mood |
+| --- | --- | --- |
+| Autumn | Falling amber leaves | Warm and mellow |
+| Rain | Window rain | Soft and focused |
+| Winter | Drifting snow | Bright and quiet |
+| Summer | Golden sparkles | Sunny and unhurried |
+| Spring | Sakura petals | Gentle and restorative |
+| Night | Floating fireflies | Deep and thoughtful |
 
 ## Season configuration
 
