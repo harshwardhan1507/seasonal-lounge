@@ -3,7 +3,13 @@ import { SeasonalLounge } from '../src/SeasonalLounge';
 import { seasonalPresets } from '../src/presets';
 import { themePresets } from '../src/themePresets';
 import type { SeasonDefinition, ParticleSettings, SeasonalTheme, EffectLayer, SeasonalEffect } from '../src/types';
-import { generateReactCode, generateConfigCode, getInstallCommand } from './codeGenerator';
+import {
+  generateReactCode,
+  generateConfigCode,
+  getInstallCommand,
+  downloadFile,
+  type PackageManager,
+} from './codeGenerator';
 import './playground.css';
 
 const DEFAULT_PARTICLES: ParticleSettings = {
@@ -38,7 +44,9 @@ const DEFAULT_THEME: SeasonalTheme = {
 };
 
 export function Playground() {
-  const [activeTab, setActiveTab] = useState<'particles' | 'theme' | 'effects'>('particles');
+  const [activeTab, setActiveTab] = useState<'particles' | 'theme' | 'effects' | 'export'>('particles');
+  const [exportFormat, setExportFormat] = useState<'tsx' | 'json' | 'install'>('tsx');
+  const [packageManager, setPackageManager] = useState<PackageManager>('npm');
   const [selectedSeasonId, setSelectedSeasonId] = useState<string>('spring');
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [particles, setParticles] = useState<ParticleSettings>(DEFAULT_PARTICLES);
@@ -87,7 +95,10 @@ export function Playground() {
     return {
       ...baseSeason,
       accent: theme.colors?.primaryAccent ?? baseSeason.accent,
-      background: theme.background?.gradient ?? (theme.background?.type === 'solid' ? theme.background.solidColor : undefined) ?? baseSeason.background,
+      background:
+        theme.background?.gradient ??
+        (theme.background?.type === 'solid' ? theme.background.solidColor : undefined) ??
+        baseSeason.background,
       videoSrc: theme.background?.videoUrl ?? baseSeason.videoSrc,
       particles,
       effects: activeEffects,
@@ -104,12 +115,22 @@ export function Playground() {
     });
   }, [selectedSeasonId, activeCustomSeason]);
 
+  const generatedTsx = useMemo(
+    () => generateReactCode(activeCustomSeason, particles, theme, activeEffects),
+    [activeCustomSeason, particles, theme, activeEffects],
+  );
+
+  const generatedJson = useMemo(
+    () => generateConfigCode(activeCustomSeason, particles, theme, activeEffects),
+    [activeCustomSeason, particles, theme, activeEffects],
+  );
+
   const showFeedback = (message: string) => {
     if (feedbackTimerRef.current) window.clearTimeout(feedbackTimerRef.current);
     setFeedback(message);
     feedbackTimerRef.current = window.setTimeout(() => {
       setFeedback(null);
-    }, 2200);
+    }, 2400);
   };
 
   useEffect(() => {
@@ -125,6 +146,16 @@ export function Playground() {
     } catch {
       showFeedback(`Failed to copy to clipboard`);
     }
+  };
+
+  const handleDownloadTsx = () => {
+    downloadFile(generatedTsx, 'Atmosphere.tsx', 'text/typescript');
+    showFeedback('✓ Downloaded Atmosphere.tsx');
+  };
+
+  const handleDownloadJson = () => {
+    downloadFile(generatedJson, 'seasonal-atmosphere.json', 'application/json');
+    showFeedback('✓ Downloaded seasonal-atmosphere.json');
   };
 
   const applyPreset = (presetKey: string) => {
@@ -246,6 +277,15 @@ export function Playground() {
             onClick={() => setActiveTab('effects')}
           >
             Layered Effects
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'export'}
+            className={`tab-btn ${activeTab === 'export' ? 'tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('export')}
+          >
+            Export & Install
           </button>
         </div>
 
@@ -649,7 +689,6 @@ export function Playground() {
                 value={baseSeason.effect ?? 'sakura'}
                 onChange={(e) => {
                   const newEffect = e.target.value as SeasonalEffect;
-                  // Update current season's effect
                   baseSeason.effect = newEffect;
                   setTheme((t) => ({ ...t }));
                 }}
@@ -705,26 +744,146 @@ export function Playground() {
           </div>
         )}
 
-        {/* Copy & Export Actions */}
+        {/* TAB 4: Dedicated Export Section */}
+        {activeTab === 'export' && (
+          <div className="control-section" data-testid="export-section">
+            <h3 className="control-section-title">Code Export & Integration</h3>
+
+            {/* Format Nav */}
+            <div className="export-format-nav" role="tablist" aria-label="Export format">
+              <button
+                type="button"
+                className={`export-format-btn ${exportFormat === 'tsx' ? 'export-format-btn--active' : ''}`}
+                onClick={() => setExportFormat('tsx')}
+              >
+                React (.tsx)
+              </button>
+              <button
+                type="button"
+                className={`export-format-btn ${exportFormat === 'json' ? 'export-format-btn--active' : ''}`}
+                onClick={() => setExportFormat('json')}
+              >
+                Config (.json)
+              </button>
+              <button
+                type="button"
+                className={`export-format-btn ${exportFormat === 'install' ? 'export-format-btn--active' : ''}`}
+                onClick={() => setExportFormat('install')}
+              >
+                Installation
+              </button>
+            </div>
+
+            {/* Code Box */}
+            {exportFormat === 'tsx' && (
+              <>
+                <div className="code-preview-box" data-testid="tsx-preview-box">
+                  <pre className="code-preview-text">{generatedTsx}</pre>
+                </div>
+                <div className="export-btn-group">
+                  <button
+                    type="button"
+                    className="action-btn action-btn--primary"
+                    onClick={() => copyToClipboard(generatedTsx, 'React TSX component')}
+                  >
+                    📋 Copy TSX
+                  </button>
+                  <button
+                    type="button"
+                    className="action-btn action-btn--secondary"
+                    onClick={handleDownloadTsx}
+                  >
+                    💾 Download TSX
+                  </button>
+                </div>
+              </>
+            )}
+
+            {exportFormat === 'json' && (
+              <>
+                <div className="code-preview-box" data-testid="json-preview-box">
+                  <pre className="code-preview-text">{generatedJson}</pre>
+                </div>
+                <div className="export-btn-group">
+                  <button
+                    type="button"
+                    className="action-btn action-btn--primary"
+                    onClick={() => copyToClipboard(generatedJson, 'Configuration JSON')}
+                  >
+                    📋 Copy Config
+                  </button>
+                  <button
+                    type="button"
+                    className="action-btn action-btn--secondary"
+                    onClick={handleDownloadJson}
+                  >
+                    💾 Download JSON
+                  </button>
+                </div>
+              </>
+            )}
+
+            {exportFormat === 'install' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div className="control-field">
+                  <label htmlFor="package-manager-select" className="control-label">Package Manager</label>
+                  <select
+                    id="package-manager-select"
+                    value={packageManager}
+                    onChange={(e) => setPackageManager(e.target.value as PackageManager)}
+                    className="control-select"
+                  >
+                    <option value="npm">npm</option>
+                    <option value="pnpm">pnpm</option>
+                    <option value="yarn">yarn</option>
+                    <option value="bun">bun</option>
+                  </select>
+                </div>
+
+                <div className="code-preview-box">
+                  <pre className="code-preview-text">{getInstallCommand(packageManager)}</pre>
+                </div>
+
+                <button
+                  type="button"
+                  className="action-btn action-btn--primary"
+                  onClick={() => copyToClipboard(getInstallCommand(packageManager), 'Install command')}
+                >
+                  📋 Copy Installation Command
+                </button>
+
+                <p className="export-guidance-note">
+                  <strong>Styles:</strong> Remember to import <code>@harshwardhan1507/seasonal-lounge/styles.css</code> in your root entry file or component.
+                </p>
+              </div>
+            )}
+
+            <p className="export-guidance-note">
+              <strong>Media Notice:</strong> All presets are CSS-only by default. If using custom video or audio, host your media in your application&apos;s public directory or asset CDN.
+            </p>
+          </div>
+        )}
+
+        {/* Global Quick Copy & Export Actions */}
         <div className="control-actions-grid">
           <button
             type="button"
             className="action-btn action-btn--primary"
-            onClick={() => copyToClipboard(generateReactCode(activeCustomSeason, particles, theme, activeEffects), 'React Component')}
+            onClick={() => copyToClipboard(generatedTsx, 'React Component')}
           >
             📋 Copy React Code
           </button>
           <button
             type="button"
             className="action-btn action-btn--secondary"
-            onClick={() => copyToClipboard(generateConfigCode(activeCustomSeason, particles, theme, activeEffects), 'Configuration JSON')}
+            onClick={() => copyToClipboard(generatedJson, 'Configuration JSON')}
           >
             ⚙️ Copy Configuration
           </button>
           <button
             type="button"
             className="action-btn action-btn--secondary"
-            onClick={() => copyToClipboard(getInstallCommand('npm'), 'Install Command')}
+            onClick={() => copyToClipboard(getInstallCommand(packageManager), 'Install Command')}
           >
             📦 Copy Installation Command
           </button>

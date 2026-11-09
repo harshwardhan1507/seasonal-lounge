@@ -15,6 +15,8 @@ Seasonal Lounge grew out of the interactive Lounge in [Harsh Wardhan's portfolio
 ## Features
 
 - Interactive Visual Playground to customize atmospheres in real time
+- One-click Code Export: Copy TSX, Copy Config, Download .tsx, and Download .json
+- Multi-package manager install generator (npm, pnpm, yarn, bun)
 - Advanced Theme Builder for custom palettes, gradients, and typography
 - Layered Effect Architecture (combine Sakura + Sparkles, Snow + Sparkles, etc.)
 - Six curated theme presets (Sakura Dream, Cozy Autumn, Midnight Rain, Winter Silence, Golden Summer, Firefly Garden)
@@ -77,6 +79,29 @@ const seasons: SeasonDefinition[] = [
 export function RestSpace() {
   return <SeasonalLounge seasons={seasons} initialSeasonId="spring" />;
 }
+```
+
+## Code export and installation generator
+
+The interactive playground allows configuring any atmosphere visually and exporting production-ready code with one click:
+
+1. **Copy TSX**: Generates a self-contained, typed React component (`<Atmosphere />`) ready to paste into your codebase.
+2. **Download TSX**: Exports an `Atmosphere.tsx` file for drop-in use.
+3. **Copy / Download JSON**: Exports a serializable JSON configuration containing your theme and particle settings (`seasonal-atmosphere.json`).
+4. **Install Command**: Switch between `npm`, `pnpm`, `yarn`, and `bun` commands with required imports.
+
+```bash
+# npm
+npm install @harshwardhan1507/seasonal-lounge
+
+# pnpm
+pnpm add @harshwardhan1507/seasonal-lounge
+
+# yarn
+yarn add @harshwardhan1507/seasonal-lounge
+
+# bun
+bun add @harshwardhan1507/seasonal-lounge
 ```
 
 ## Theme Builder and layered effects

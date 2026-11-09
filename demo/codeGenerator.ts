@@ -1,6 +1,8 @@
 import type { SeasonDefinition, ParticleSettings, SeasonalTheme, EffectLayer } from '../src/types';
 
-export function getInstallCommand(pm: 'npm' | 'pnpm' | 'yarn' | 'bun' = 'npm'): string {
+export type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun';
+
+export function getInstallCommand(pm: PackageManager = 'npm'): string {
   switch (pm) {
     case 'pnpm':
       return 'pnpm add @harshwardhan1507/seasonal-lounge';
@@ -14,6 +16,14 @@ export function getInstallCommand(pm: 'npm' | 'pnpm' | 'yarn' | 'bun' = 'npm'): 
   }
 }
 
+export function escapeJsString(str: string): string {
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r');
+}
+
 export function generateConfigObject(
   season: SeasonDefinition,
   particles?: ParticleSettings,
@@ -21,10 +31,18 @@ export function generateConfigObject(
   effects?: EffectLayer[],
 ) {
   return {
-    ...season,
+    id: season.id,
+    label: season.label,
+    description: season.description,
+    effect: season.effect ?? 'none',
+    accent: season.accent ?? '#f9a8d4',
+    background: season.background,
+    videoSrc: season.videoSrc,
+    audioSrc: season.audioSrc,
+    audioSegment: season.audioSegment,
     ...(particles ? { particles } : {}),
-    ...(theme ? { theme } : {}),
     ...(effects && effects.length > 0 ? { effects } : {}),
+    ...(theme ? { theme } : {}),
   };
 }
 
@@ -44,7 +62,7 @@ export function generateReactCode(
   theme?: SeasonalTheme,
   effects?: EffectLayer[],
 ): string {
-  const symbolStr = typeof season.symbol === 'string' ? `'${season.symbol}'` : "'🌸'";
+  const symbolStr = typeof season.symbol === 'string' ? `'${escapeJsString(season.symbol)}'` : "'🌸'";
   const config = generateConfigObject(season, particles, theme, effects);
 
   const particlesSection = config.particles
@@ -59,18 +77,31 @@ export function generateReactCode(
     ? `\n    theme: ${JSON.stringify(config.theme, null, 4).replace(/\n/g, '\n    ')},`
     : '';
 
-  return `import { SeasonalLounge, type SeasonDefinition } from '@harshwardhan1507/seasonal-lounge';
+  const videoSrcSection = config.videoSrc
+    ? `\n    videoSrc: '${escapeJsString(config.videoSrc)}',`
+    : '';
+
+  const audioSrcSection = config.audioSrc
+    ? `\n    audioSrc: '${escapeJsString(config.audioSrc)}',`
+    : '';
+
+  return `import React from 'react';
+import { SeasonalLounge, type SeasonDefinition } from '@harshwardhan1507/seasonal-lounge';
 import '@harshwardhan1507/seasonal-lounge/styles.css';
 
-const seasons: SeasonDefinition[] = [
+/**
+ * Custom Seasonal Lounge atmosphere component.
+ * If you use custom videoSrc or audioSrc, ensure the media files are hosted in your app's public/ folder or CDN.
+ */
+export const atmosphereSeasons: SeasonDefinition[] = [
   {
-    id: '${config.id}',
-    label: '${config.label}',
-    description: '${config.description.replace(/'/g, "\\'")}',
+    id: '${escapeJsString(config.id)}',
+    label: '${escapeJsString(config.label)}',
+    description: '${escapeJsString(config.description)}',
     effect: '${config.effect ?? 'none'}',
-    accent: '${config.accent ?? '#f9a8d4'}',
-    background: '${(config.background ?? '').replace(/'/g, "\\'")}',
-    symbol: ${symbolStr},${particlesSection}${effectsSection}${themeSection}
+    accent: '${escapeJsString(config.accent ?? '#f9a8d4')}',
+    background: '${escapeJsString(config.background ?? '')}',
+    symbol: ${symbolStr},${videoSrcSection}${audioSrcSection}${particlesSection}${effectsSection}${themeSection}
   },
 ];
 
@@ -78,11 +109,26 @@ export function Atmosphere() {
   return (
     <div style={{ width: '100%', minHeight: '36rem' }}>
       <SeasonalLounge
-        seasons={seasons}
-        initialSeasonId="${config.id}"
+        seasons={atmosphereSeasons}
+        initialSeasonId="${escapeJsString(config.id)}"
       />
     </div>
   );
 }
+
+export default Atmosphere;
 `;
+}
+
+export function downloadFile(content: string, filename: string, mimeType: string) {
+  if (typeof window === 'undefined' || !window.URL) return;
+  const blob = new Blob([content], { type: mimeType });
+  const url = window.URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+  window.URL.revokeObjectURL(url);
 }

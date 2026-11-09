@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented here.
 
+## [1.4.0] - 2026-11-09
+
+### Added
+
+- Code Export and Installation Generator in the Visual Playground
+- Dedicated Export & Install tab with live code preview and format switcher (React TSX, JSON Config, Installation)
+- One-click "Copy TSX" generating standalone, fully-typed React components using the public package API
+- "Download TSX" (`Atmosphere.tsx`) and "Download JSON" (`seasonal-atmosphere.json`) file exports
+- Multi-package manager install command generation (supporting npm, pnpm, yarn, and bun)
+- Safe string escaping for user-configured descriptions, symbols, gradients, and media URLs
+- Developer guidance for media hosting and stylesheet imports
+- Automated test coverage for TSX code generation, JSON serialization, escaping, and browser file downloads
+
 ## [1.3.0] - 2026-11-09
 
 ### Added

@@ -1,6 +1,6 @@
 .playground-container {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(340px, 1.05fr);
+  grid-template-columns: minmax(0, 1.3fr) minmax(350px, 1.05fr);
   gap: 24px;
   align-items: start;
   margin-top: 16px;
@@ -124,6 +124,7 @@
   padding: 4px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-x: auto;
 }
 
 .tab-btn {
@@ -133,10 +134,11 @@
   color: rgba(255, 255, 255, 0.65);
   font-size: 12px;
   font-weight: 650;
-  padding: 6px 10px;
+  padding: 7px 10px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 140ms ease;
+  white-space: nowrap;
 }
 
 .tab-btn:hover {
@@ -336,6 +338,72 @@
   accent-color: #f9a8d4;
   width: 18px;
   height: 18px;
+}
+
+/* Dedicated Export UI */
+.export-format-nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.export-format-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 6px 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.export-format-btn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.export-format-btn--active {
+  background: rgba(249, 168, 212, 0.18);
+  border-color: #f9a8d4;
+  color: white;
+}
+
+.code-preview-box {
+  background: #0d0b0f;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 12px;
+  max-height: 280px;
+  overflow: auto;
+}
+
+.code-preview-text {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #f1f5f9;
+  white-space: pre;
+}
+
+.export-btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.export-guidance-note {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #f9a8d4;
+  padding: 8px 12px;
+  border-radius: 0 6px 6px 0;
+  margin: 0;
 }
 
 .control-actions-grid {
