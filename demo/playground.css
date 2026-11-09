@@ -1,0 +1,297 @@
+.playground-container {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: 16px;
+}
+
+@media (max-width: 1024px) {
+  .playground-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left Panel: Preview */
+.playground-preview-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.viewport-toggle-group {
+  display: flex;
+  gap: 6px;
+}
+
+.viewport-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.viewport-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.viewport-btn--active {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: #f9a8d4;
+  color: white;
+}
+
+.preview-badge {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+}
+
+.preview-stage {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  transition: max-width 240ms ease;
+  margin: 0 auto;
+}
+
+.preview-stage--desktop {
+  width: 100%;
+}
+
+.preview-stage--tablet {
+  max-width: 768px;
+}
+
+.preview-stage--mobile {
+  max-width: 390px;
+}
+
+.preview-stage .seasonal-lounge {
+  width: 100%;
+}
+
+/* Right Panel: Controls */
+.playground-controls-panel {
+  background: rgba(18, 14, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.controls-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+
+.controls-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.02em;
+  color: white;
+}
+
+.reset-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.reset-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.control-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.control-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+.control-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-field-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.control-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.control-value-badge {
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #f9a8d4;
+  background: rgba(249, 168, 212, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.control-slider {
+  width: 100%;
+  accent-color: #f9a8d4;
+  cursor: pointer;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  outline: none;
+}
+
+.control-slider:focus-visible {
+  outline: 2px solid #f9a8d4;
+  outline-offset: 2px;
+}
+
+.control-select,
+.control-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: white;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 140ms ease;
+}
+
+.control-select:focus,
+.control-input:focus {
+  border-color: #f9a8d4;
+  box-shadow: 0 0 0 1px #f9a8d4;
+}
+
+.control-season-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.season-btn-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.season-btn-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.season-btn-card--active {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.control-actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.action-btn--primary {
+  background: #f9a8d4;
+  color: #24141f;
+  border: 1px solid #f9a8d4;
+}
+
+.action-btn--primary:hover {
+  background: #f472b6;
+  border-color: #f472b6;
+}
+
+.action-btn--secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: white;
+}
+
+.action-btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.action-feedback {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  color: #86efac;
+  min-height: 16px;
+  transition: opacity 200ms ease;
+}

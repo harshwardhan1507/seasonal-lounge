@@ -1,23 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { SeasonalLounge } from '../src/SeasonalLounge';
-import { seasonalPresets } from '../src/presets';
+import { Playground } from './Playground';
 import '../src/styles.css';
 import './page.css';
 
-function Demo() {
+export function Demo() {
   return (
     <main className="demo-shell">
       <header className="demo-header">
         <div>
-          <span className="demo-kicker">Open-source React component</span>
+          <span className="demo-kicker">Interactive Visual Playground</span>
           <h1>Seasonal Lounge</h1>
         </div>
-        <a href="https://github.com/harshwardhan1507/seasonal-lounge">View on GitHub ↗</a>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <a
+            href="https://github.com/harshwardhan1507/seasonal-lounge"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub ↗
+          </a>
+          <a
+            href="https://www.npmjs.com/package/@harshwardhan1507/seasonal-lounge"
+            target="_blank"
+            rel="noreferrer"
+          >
+            npm ↗
+          </a>
+        </div>
       </header>
-      <SeasonalLounge seasons={seasonalPresets} initialSeasonId="spring" showAudioControl={false} />
+
+      <Playground />
+
       <footer className="demo-footer">
-        <p className="demo-caption">Bring your own licensed media—or create a calm, CSS-only scene.</p>
+        <p className="demo-caption">
+          Bring your own licensed media—or craft a calm, CSS-only ambient atmosphere with real-time particle customization.
+        </p>
         <p className="demo-credit">
           Designed and developed by{' '}
           <a href="https://harshwardhanportfolio.vercel.app" target="_blank" rel="noreferrer">
@@ -29,6 +47,11 @@ function Demo() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode><Demo /></React.StrictMode>,
-);
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+      <Demo />
+    </React.StrictMode>,
+  );
+}

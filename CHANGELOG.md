@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented here.
 
+## [1.2.0] - 2026-11-09
+
+### Added
+
+- Interactive visual customization playground in the demo application
+- Two-panel responsive workspace with live preview and real-time controls
+- Responsive preview viewports: Desktop (100%), Tablet (768px), and Mobile (390px)
+- Live sliders for particle density, speed multiplier, particle size, opacity, and direction
+- Quick actions: Copy React Component code, Copy Configuration JSON, and Copy Install Command
+- Clipboard feedback toast and reset-to-defaults functionality
+- Comprehensive test suite for playground controls, clipboard operations, and code generation
+
 ## [1.1.0] - 2026-11-09
 
 ### Added

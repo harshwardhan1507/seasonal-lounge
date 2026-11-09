@@ -14,6 +14,7 @@ Seasonal Lounge grew out of the interactive Lounge in [Harsh Wardhan's portfolio
 
 ## Features
 
+- Interactive Visual Playground to customize atmospheres in real time
 - Seasonal video backgrounds
 - Optional ambient audio
 - Highlight loops using exact start and end times
