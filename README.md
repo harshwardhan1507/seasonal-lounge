@@ -1,7 +1,7 @@
 # Seasonal Lounge
 
 [![CI](https://github.com/harshwardhan1507/seasonal-lounge/actions/workflows/ci.yml/badge.svg)](https://github.com/harshwardhan1507/seasonal-lounge/actions/workflows/ci.yml)
-[![Demo](https://img.shields.io/badge/demo-GitHub%20Pages-f9a8d4)](https://harshwardhan1507.github.io/seasonal-lounge/)
+[![Demo](https://img.shields.io/badge/demo-Vercel-f9a8d4)](https://seasonal-lounge.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-7dd3fc.svg)](./LICENSE)
 
 A configurable React lounge for seasonal video scenes, ambient audio highlights, particle effects, and a distraction-free full-screen calm mode.
@@ -10,7 +10,7 @@ A configurable React lounge for seasonal video scenes, ambient audio highlights,
 
 Seasonal Lounge grew out of the interactive Lounge in [Harsh Wardhan's portfolio](https://harshwardhanportfolio.vercel.app). The library keeps the reusable experience while leaving all media choices to the application using it.
 
-**[View the live demo →](https://harshwardhan1507.github.io/seasonal-lounge/)**
+**[View the live demo →](https://seasonal-lounge.vercel.app/)**
 
 ## Features
 

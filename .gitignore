@@ -6,3 +6,5 @@ demo-dist/
 .env*
 !.env.example
 coverage/
+
+.vercel
